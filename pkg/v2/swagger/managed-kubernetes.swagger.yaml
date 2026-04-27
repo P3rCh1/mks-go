@@ -1,0 +1,2627 @@
+openapi: 3.0.0
+info:
+  title: Managed Kubernetes API
+  description: 'Managing clusters, node groups, and Managed Kubernetes nodes: creating a cluster, automating cluster maintenance, and more'
+  version: 2.0.0
+servers:
+  - url: https://test-domain.selectel.org
+tags:
+  - name: Clusters
+    description: 'Managing kubernetes clusters: create, update, delete, automate cluster maintenance, and more'
+  - name: Nodegroups
+    description: 'Managing nodegroups in the clusters: create, update, delete, resize, automate scaling, and more'
+  - name: Nodes
+    description: 'Managing nodegroups in the nodegroups: delete, reinstall, and more'
+  - name: Actions
+    description: Managing available actions with clusters and nodegroups
+  - name: Tasks
+    description: Managing cluster's tasks
+  - name: AdmissionControllers
+    description: Managing supported admission controllers
+  - name: FeatureGates
+    description: Managing supported feature gates
+  - name: Kubeversions
+    description: Managing supported Kubernetes versions
+  - name: Registries
+    description: Managing registries integrations
+  - name: Extras
+    description: Managing extra information about resources
+paths:
+  /v2/clusters:
+    get:
+      summary: Get all clusters
+      description: Returns list of clusters.
+      operationId: listClustersV2
+      tags:
+        - Clusters
+      responses:
+        '200':
+          description: Clusters list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterList'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    post:
+      summary: Create a new cluster
+      description: Start cluster creation process.
+      operationId: createClusterV2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterCreateBody'
+        description: Cluster create request body.
+        required: true
+      tags:
+        - Clusters
+      responses:
+        '201':
+          description: Cluster creation started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResp'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}:
+    get:
+      summary: Get cluster information
+      description: Returns single cluster by provided cluster_id.
+      operationId: getClusterV2
+      tags:
+        - Clusters
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      responses:
+        '200':
+          description: Cluster Information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResp'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    put:
+      summary: Update cluster
+      description: Update cluster parameters.
+      operationId: updateClusterV2
+      tags:
+        - Clusters
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterUpdateBody'
+        description: Cluster update request body.
+        required: true
+      responses:
+        '200':
+          description: Cluster updating started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResp'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    delete:
+      summary: Delete cluster.
+      description: Deletes cluster by provided cluster_id.
+      operationId: deleteClusterV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Clusters
+      responses:
+        '204':
+          description: Cluster Successfully Deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/actions:
+    get:
+      summary: Get available actions for cluster
+      description: Returns available actions for cluster.
+      operationId: getClusterActionsV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/lang'
+      tags:
+        - Clusters
+        - Actions
+      responses:
+        '200':
+          description: Information about cluster actions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterActionsResp'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/kubeconfig:
+    get:
+      summary: Get cluster kubeconfig
+      description: Returns kubeconfig in YAML for requested cluster.
+      operationId: getClusterKubeconfigV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Clusters
+      responses:
+        '200':
+          description: Cluster kubeconfig.
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/rotate-certs:
+    post:
+      summary: Rotate cluster certificates
+      description: Starts certificates rotation task.
+      operationId: rotateClusterCertsV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Clusters
+      responses:
+        '204':
+          description: Certificates rotation started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/upgrade-patch-version:
+    post:
+      summary: Upgrade cluster patch version
+      description: Starts upgrade patch version task.
+      operationId: upgradePatchVersionV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Clusters
+      responses:
+        '200':
+          description: Cluster upgrading process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResp'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/upgrade-minor-version:
+    post:
+      summary: Upgrade cluster minor version
+      description: Starts upgrade minor version task.
+      operationId: upgradeMinorVersionV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Clusters
+      responses:
+        '200':
+          description: Cluster upgrading process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterResp'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/tasks:
+    get:
+      summary: Get all cluster tasks
+      description: Returns tasks of the cluster.
+      operationId: listTasksV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/with_error_details'
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: Cluster's task list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+        '404':
+          description: Cluster Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/tasks/{task_id}:
+    get:
+      summary: Get task of the cluster
+      description: Returns task of the cluster.
+      operationId: getTaskV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/task_id'
+        - $ref: '#/components/parameters/with_error_details'
+      tags:
+        - Tasks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResp'
+        '404':
+          description: Cluster or Task Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups:
+    get:
+      summary: Get all nodegroups of the cluster
+      description: Returns list of nodegroups of the cluster.
+      operationId: listNodegroupsV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Nodegroups
+      responses:
+        '200':
+          description: Nodegroups list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodegroupList'
+        '400':
+          description: Invalid path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    post:
+      summary: Create new nodegroups
+      description: Start nodegroups creation process.
+      operationId: createNodegroupsV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodegroupsCreateBody'
+        description: Nodegroups create request body.
+        required: true
+      tags:
+        - Nodegroups
+      responses:
+        '204':
+          description: Nodegroups creation started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups/{nodegroup_id}:
+    get:
+      summary: Get nodegroup information
+      description: Returns single nodegroup by provided cluster_id and nodegroup_id.
+      operationId: getNodegroupV2
+      tags:
+        - Nodegroups
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+      responses:
+        '200':
+          description: Nodegroup information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodegroupResp'
+        '400':
+          description: Invalid path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_not_found_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    put:
+      summary: Update nodegroup
+      description: Update nodegroup by provided cluster_id and nodegroup_id.
+      operationId: updateNodegroupV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodegroupUpdateBody'
+        description: Nodegroup update request body.
+        required: true
+      tags:
+        - Nodegroups
+      responses:
+        '204':
+          description: Nodegroup update process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    delete:
+      summary: Delete nodegroup.
+      description: Deletes nodegorup by provided cluster_id and nodegroup_id.
+      operationId: deleteNodegroupV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+      tags:
+        - Nodegroups
+      responses:
+        '204':
+          description: Nodegroup deletion started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups/{nodegroup_id}/resize:
+    post:
+      summary: Resize nodegroup
+      description: Resize nodegroup by provided cluster_id and nodegroup_id.
+      operationId: resizeNodegroupV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodegroupResizeBody'
+        description: Nodegroup resize request body.
+        required: true
+      tags:
+        - Nodegroups
+      responses:
+        '204':
+          description: Nodegroup resize process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups/{nodegroup_id}/actions:
+    get:
+      summary: Get available actions for nodegroup of the cluster
+      description: Returns available actions for nodegroup.
+      operationId: getNodegroupActionsV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+        - $ref: '#/components/parameters/lang'
+      tags:
+        - Nodegroups
+        - Actions
+      responses:
+        '200':
+          description: Information about cluster actions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodegroupActionsResp'
+        '400':
+          description: Invalid request body, path or query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or nodegroup not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups/{nodegroup_id}/nodes/{node_id}:
+    get:
+      summary: Get node information
+      description: Returns single node by provided cluster_id, nodegroup_id and node_id.
+      operationId: getNodeV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+        - $ref: '#/components/parameters/node_id'
+      tags:
+        - Nodes
+      responses:
+        '200':
+          description: Node information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeResp'
+        '404':
+          description: Cluster, nodegroup or node not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    delete:
+      summary: Delete node.
+      description: Deletes node by provided cluster_id, nodegroup_id and node_id.
+      operationId: deleteNodeV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+        - $ref: '#/components/parameters/node_id'
+      tags:
+        - Nodes
+      responses:
+        '204':
+          description: Node deletion started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster, nodegroup or node not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/nodegroups/{nodegroup_id}/nodes/{node_id}/reinstall:
+    post:
+      summary: Reinstall node.
+      description: Reinstall node by provided cluster_id, nodegroup_id and node_id.
+      operationId: reinstallNodeV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/nodegroup_id'
+        - $ref: '#/components/parameters/node_id'
+      tags:
+        - Nodes
+      responses:
+        '204':
+          description: Node reinstall process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster, nodegroup or node not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '409':
+          description: Cluster or one of nodegroups has invalid status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/registries:
+    post:
+      summary: Create new registries integration
+      description: Create new registries integration in provided cluster
+      operationId: createRegistriesV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistriesIntergrationCreateBody'
+        description: Registries integrations create request body.
+        required: true
+      tags:
+        - Registries
+      responses:
+        '201':
+          description: Integrations creation process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistriesIntegration'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    get:
+      summary: Get integrated registries
+      description: Get registries integrated with provided cluster
+      operationId: getRegistriesV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Registries
+      responses:
+        '200':
+          description: Registries integration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistriesIntegration'
+        '400':
+          description: Invalid request path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    put:
+      summary: Update registries integrations
+      description: Update registries integration in provided cluster
+      operationId: updateRegistriesV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistriesIntergrationUpdateBody'
+        description: Registries integrations update request body.
+        required: true
+      tags:
+        - Registries
+      responses:
+        '200':
+          description: Integrations updating process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistriesIntegration'
+        '400':
+          description: Invalid request body or path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+    delete:
+      summary: Delete all registries integrations
+      description: Delete all registries integrations in provided cluster
+      operationId: deleteRegistriesV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+      tags:
+        - Registries
+      responses:
+        '204':
+          description: Integrations deletion process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/clusters/{cluster_id}/registries/{registry_id}:
+    delete:
+      summary: Delete registry integration
+      description: Delete provided registry integration in provided cluster
+      operationId: deleteRegistryV2
+      parameters:
+        - $ref: '#/components/parameters/cluster_id'
+        - $ref: '#/components/parameters/registry_id'
+      tags:
+        - Registries
+      responses:
+        '204':
+          description: Integration deletion process started successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_no_content'
+        '400':
+          description: Invalid request path parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '404':
+          description: Cluster or registry integration not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/admission-controllers:
+    get:
+      summary: Get supported admission controllers
+      description: Get supported admission controllers.
+      operationId: listAdmissionControllersV2
+      tags:
+        - AdmissionControllers
+      responses:
+        '200':
+          description: Admission controllers list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdmissionControllersList'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/kubeversions:
+    get:
+      summary: Get all supported Kubernetes versions
+      description: Get all supported Kubernetes versions.
+      operationId: listKubeVersionsV2
+      tags:
+        - Kubeversions
+      responses:
+        '200':
+          description: Kubernetes versions list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubeVersionsList'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/feature-gates:
+    get:
+      summary: Get supported feature gates
+      description: Get supported feature gates.
+      operationId: listFeatureGatesV2
+      tags:
+        - FeatureGates
+      responses:
+        '200':
+          description: Feature gates list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureGatesList'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/extras/usage:
+    get:
+      summary: Get clusters and nodegroups count in the current pool.
+      description: |-
+        Get count of clusters and nodegroups in the current pool.
+        Calculation will be done for the project_id defined in token.
+      operationId: getUsageV2
+      tags:
+        - Extras
+      responses:
+        '200':
+          description: Project resource usage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceUsage'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+  /v2/extras/limits:
+    get:
+      summary: Get list of limits for current pool.
+      description: |-
+        Get list of limits for current pool.
+        Calculation will be done for the project_id defined in token.
+      operationId: getLimitsV2
+      parameters:
+        - $ref: '#/components/parameters/kube_version'
+      tags:
+        - Extras
+      responses:
+        '200':
+          description: Project resource usage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LimitsList'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_error'
+components:
+  schemas:
+    AuditLogs:
+      type: object
+      required:
+        - enabled
+        - secret_name
+      properties:
+        enabled:
+          description: |-
+            If `enabled` kubernetes audit logs should be collected
+            and pushed into SIEM system (e.g. logstash).
+            False by default.
+          type: boolean
+          example: true
+        secret_name:
+          description: 'Contains name of the kubernetes secret in namespace kube-system with credentials of SIEM system where logs should be pushed. Fields of the secret: host, port, username (optional), password (optional), ca.crt (optional). This field is optional. By default, used mks-audit-logs. Secret name should be as a DNS subdomain name as defined in RFC 1123. [More Information.](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names)'
+          type: string
+    OIDC:
+      description: OIDC represents parameters to connect client's OIDC provider with kubernetes.
+      required:
+        - client_id
+        - enabled
+        - groups_claim
+        - issuer_url
+        - provider_name
+        - username_claim
+        - ca_certs
+      type: object
+      properties:
+        client_id:
+          description: Represents required client id that all tokens must be issued for. Will be placed in `--oidc-client-id` flag. It is required when enabled = true.
+          type: string
+        enabled:
+          description: |-
+            If `enabled` OIDC should be turned on in the cluster.
+            False by default.
+          type: boolean
+        groups_claim:
+          description: Represents optional JWT claim to use as the user's group. By default, `groups`. Will be placed in `--oidc-groups-claim` flag.
+          type: string
+        issuer_url:
+          description: Represents URL of the provider that allows the API server to discover public signing keys. Will be placed in `--oidc-issuer-url` flag. It is required when enabled = true.
+          type: string
+        provider_name:
+          description: Represents custom user defined name of the provider. It is not used in the cluster directly. It is required when enabled = true.
+          type: string
+        username_claim:
+          description: Represents optional JWT claim to use as the username. By default, `sub`. Will be placed in `--oidc-username-claim` flag.
+          type: string
+        ca_certs:
+          description: |-
+            CACerts represent optional custom CA certs chain in X509 PEM format of provider's SSL certificate.
+            Will be written to file on masters which will be passed in `--oidc-ca-file` kube-apiserver flag.
+          x-omitempty: true
+          type: string
+        ca_certs_expiration:
+          description: CACertsExpiration represents date and time when the first of provided CA certificates will be expired.
+          format: date-time
+          x-omitempty: true
+          type: string
+    KubernetesOptions:
+      type: object
+      required:
+        - admission_controllers
+        - audit_logs
+        - feature_gates
+        - oidc
+        - x509_ca_certificates
+      description: |-
+        Represents additional k8s options such as pod security policy,
+        feature gates and etc.
+      properties:
+        admission_controllers:
+          description: Represents turned on admission controllers for the cluster.
+          items:
+            type: string
+          type: array
+        audit_logs:
+          $ref: '#/components/schemas/AuditLogs'
+        feature_gates:
+          description: Represents turned on feature gates
+          items:
+            type: string
+          type: array
+        oidc:
+          $ref: '#/components/schemas/OIDC'
+        x509_ca_certificates:
+          description: Represent custom X509 CA certs which can be used for cluster components. Certificates should be encoded to base64 format. Note 💡 ``` X509CaCertificates can be disabled for some pools. ```
+          x-omitempty: true
+          type: string
+    Cluster:
+      description: Provides information about cluster.
+      required:
+        - id
+        - created_at
+        - updated_at
+        - name
+        - project_id
+        - status
+        - basic
+        - enable_autorepair
+        - enable_patch_version_auto_upgrade
+        - private_kube_api
+        - kube_api_ip
+        - subnet_id
+        - kube_version
+        - network_id
+        - network_type
+        - pool
+        - kubernetes_options
+        - cni_type
+      type: object
+      properties:
+        id:
+          description: Uniq identifier of the cluster.
+          type: string
+          format: uuid4
+          example: 5C2B9606-F7FA-4468-AD98-E389D5334CBA
+        created_at:
+          description: Timestamp in UTC timezone of when the cluster has been created.
+          type: string
+          format: date-time
+          example: '2019-11-04T10:21:11.943917Z'
+        updated_at:
+          description: Timestamp in UTC timezone of when the cluster has been updated.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        name:
+          description: Represents the name of the cluster.
+          type: string
+          example: super-mks-cluster
+        project_id:
+          description: Contains reference to the project of the cluster.
+          type: string
+          example: 8D226B33-3897-4223-AAAF-A83D49C5399E
+        status:
+          description: Represents current status of the cluster.
+          type: string
+          enum:
+            - ACTIVE
+            - ERROR
+            - DELETED
+            - CREATING
+          example: ACTIVE
+        basic:
+          description: Specifies that cluster has only a single master and that control-plane is not in highly available mode.
+          type: boolean
+          example: true
+        enable_autorepair:
+          description: Reflects if worker nodes are allowed to be reinstalled automatically in case of their unavailability or unhealthiness.
+          type: boolean
+          example: true
+        enable_patch_version_auto_upgrade:
+          description: Specifies if Kubernetes version of the cluster is allowed to be upgraded automatically.
+          type: boolean
+          example: true
+        private_kube_api:
+          description: Represents if kube API is available from the Internet or not.
+          type: boolean
+          example: true
+        kube_api_ip:
+          description: Represents the IP of the Kubernetes API.
+          type: string
+          example: 10.10.1.1
+        subnet_id:
+          description: Contains reference to the subnet of the cluster.
+          format: uuid4
+          type: string
+          example: 0FAB540C-1099-4A4A-AD6C-C1498BE74E0A
+        kube_version:
+          description: Represents the current Kubernetes version of the cluster.
+          type: string
+          example: 1.32
+        network_id:
+          description: Contains reference to the network of the cluster.
+          format: uuid4
+          type: string
+          example: EE102156-A9A8-423A-811D-F8E3C56891B7
+        network_type:
+          description: Represents type of network l3vpn or default.
+          type: string
+          enum:
+            - STANDARD
+            - L3VPN
+        pool:
+          description: Represents the pool of where the cluster master nodes are located.
+          type: string
+          example: ru-9
+        kubernetes_options:
+          $ref: '#/components/schemas/KubernetesOptions'
+        cni_type:
+          description: CNI type represents type of CNI which is used in cluster.
+          type: string
+          enum:
+            - CALICO
+            - CILIUM
+    ClusterList:
+      description: List of clusters.
+      type: object
+      properties:
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster'
+    generic_error:
+      description: Generic Error.
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              description: Error Message.
+              type: string
+              example: Some error occurred
+          required:
+            - message
+      required:
+        - error
+    CNICiliumSettings:
+      type: object
+      description: |-
+        Represents settings for Cilium CNI if this CNI was chosen as "cni_type".
+        Otherwise settings will be ignored.
+      properties:
+        hubble_relay:
+          description: Enables hubble relay for Cilium CNI.
+          type: boolean
+          default: true
+        envoy_daemonset:
+          description: Enables Envoy DaemonSet for Cilium CNI.
+          type: boolean
+          default: true
+    ClusterCreateStruct:
+      properties:
+        additional_software:
+          additionalProperties: {}
+          description: |-
+            AdditionalSoftware represents information about additional software installed in the cluster.
+            Deprecated: do not use.
+          type: object
+        basic:
+          description: |-
+            Basic specifies that only a single zonal master will be created.
+            It is needed if highly available control-plane is not required.
+            False by default.
+          type: boolean
+        cloud_subnet_cidr:
+          x-omitempty: true
+          type: string
+        enable_patch_version_auto_upgrade:
+          description: |-
+            EnablePatchVersionAutoUpgrade specifies if Kubernetes version of the cluster is allowed to be upgraded
+            automatically.
+            Enabled by default for regional clusters and disabled for zonal clusters.
+          type: boolean
+        enable_autorepair:
+          description: EnableAutorepair reflects if worker nodes are allowed to be reinstalled  automatically in case of their unavailability or unhealthiness.
+          type: boolean
+          default: true
+        kube_version:
+          description: |-
+            KubeVersion represents the needed Kubernetes version of the cluster.
+            It should be in x.y.z format.
+          type: string
+        kubernetes_options:
+          $ref: '#/components/schemas/KubernetesOptions'
+        maintenance_window_start:
+          description: |-
+            MaintenanceWindowStart represents UTC time of when the cluster will start its maintenance tasks.
+            It should be in hh:mm:ss format if provided.
+          type: string
+        name:
+          description: |-
+            Name represent the needed name of the cluster.
+            It shouldn't contain more than 32 symbols and can contain latin letters
+            with numbers and hyphens and start with a letter or a number.
+          type: string
+        network_id:
+          description: |-
+            NetworkID contains a reference to the network of the cluster.
+            It can be set in cases where network is pre-created.
+          format: uuid4
+          type: string
+        network_type:
+          description: NetworkType represents which network will be used for master-node connection.
+          type: string
+        pool:
+          description: Pool represents the pool of where the cluster master nodes are located.
+          type: string
+        private_kube_api:
+          description: |-
+            PrivateKubeAPI specifies if kube API should be available from the Internet or not.
+            False by default.
+          type: boolean
+        subnet_id:
+          description: |-
+            SubnetID contains a reference to the subnet of the cluster.
+            It can be set in cases where subnet is pre-created.
+          format: uuid4
+          type: string
+        cni_type:
+          description: |-
+            CNI type represents type of CNI which will be used in cluster.
+            Supported CNI types are CALICO and CILIUM. CALICO by default.
+          type: string
+        cni_cilium_settings:
+          $ref: '#/components/schemas/CNICiliumSettings'
+      required:
+        - name
+        - network_id
+        - subnet_id
+        - kube_version
+        - private_kube_api
+        - pool
+        - network_type
+        - maintenance_window_start
+        - cloud_subnet_cidr
+        - basic
+        - additional_software
+      type: object
+    ClusterCreateBody:
+      description: |-
+        ClusterCreateBody
+        represents body content.
+      properties:
+        cluster:
+          $ref: '#/components/schemas/ClusterCreateStruct'
+    ClusterDetailed:
+      description: Provides detailed information about cluster.
+      required:
+        - id
+        - created_at
+        - updated_at
+        - name
+        - project_id
+        - status
+        - basic
+        - enable_autorepair
+        - enable_patch_version_auto_upgrade
+        - private_kube_api
+        - kube_api_ip
+        - subnet_id
+        - kube_version
+        - network_id
+        - network_type
+        - pool
+        - kubernetes_options
+        - additional_software
+        - maintenance_last_start
+        - maintenance_window_end
+        - maintenance_window_start
+        - pki_tree_updated_at
+        - cni_type
+      type: object
+      properties:
+        id:
+          description: Uniq identifier of the cluster.
+          type: string
+          format: uuid4
+          example: 5C2B9606-F7FA-4468-AD98-E389D5334CBA
+        created_at:
+          description: Timestamp in UTC timezone of when the cluster has been created.
+          type: string
+          format: date-time
+          example: '2019-11-04T10:21:11.943917Z'
+        updated_at:
+          description: Timestamp in UTC timezone of when the cluster has been updated.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        name:
+          description: Represents the name of the cluster.
+          type: string
+          example: super-mks-cluster
+        project_id:
+          description: Contains reference to the project of the cluster.
+          type: string
+          example: 8D226B33-3897-4223-AAAF-A83D49C5399E
+        status:
+          description: Represents current status of the cluster.
+          type: string
+          enum:
+            - ACTIVE
+            - PENDING_CREATE
+            - PENDING_UPDATE
+            - PENDING_UPGRADE
+            - PENDING_ROTATE_CERTS
+            - PENDING_DELETE
+            - PENDING_RESIZE
+            - PENDING_NODE_REINSTALL
+            - PENDING_UPGRADE_PATCH_VERSION
+            - PENDING_UPGRADE_MINOR_VERSION
+            - PENDING_UPDATE_NODEGROUP
+            - PENDING_UPGRADE_MASTERS_CONFIGURATION
+            - PENDING_REINSTALL_MASTERS
+            - PENDING_UPGRADE_CLUSTER_CONFIGURATION
+            - MAINTENANCE
+            - ERROR
+            - PENDING_NODES_UNSHELVE
+            - PENDING_UPDATE_REGISTRIES_INTEGRATION
+          example: ACTIVE
+        basic:
+          description: Specifies that cluster has only a single master and that control-plane is not in highly available mode.
+          type: boolean
+          example: true
+        enable_autorepair:
+          description: Reflects if worker nodes are allowed to be reinstalled automatically in case of their unavailability or unhealthiness.
+          type: boolean
+          example: true
+        enable_patch_version_auto_upgrade:
+          description: Specifies if Kubernetes version of the cluster is allowed to be upgraded automatically.
+          type: boolean
+          example: true
+        private_kube_api:
+          description: Represents if kube API is available from the Internet or not.
+          type: boolean
+          example: true
+        kube_api_ip:
+          description: Represents the IP of the Kubernetes API.
+          type: string
+          example: 10.10.1.1
+        subnet_id:
+          description: Contains reference to the subnet of the cluster.
+          format: uuid4
+          type: string
+          example: 0FAB540C-1099-4A4A-AD6C-C1498BE74E0A
+        kube_version:
+          description: Represents the current Kubernetes version of the cluster.
+          type: string
+          example: 1.32
+        network_id:
+          description: Contains reference to the network of the cluster.
+          format: uuid4
+          type: string
+          example: EE102156-A9A8-423A-811D-F8E3C56891B7
+        network_type:
+          description: Represents type of network l3vpn or default.
+          type: string
+          enum:
+            - STANDARD
+            - L3VPN
+        pool:
+          description: Represents the pool of where the cluster master nodes are located.
+          type: string
+          example: ru-9
+        kubernetes_options:
+          $ref: '#/components/schemas/KubernetesOptions'
+        additional_software:
+          additionalProperties: {}
+          description: AdditionalSoftware represents information about additional software installed in the cluster.
+          type: object
+        maintenance_last_start:
+          description: MaintenanceLastStart is the timestamp in UTC timezone of the last cluster maintenance start.
+          format: date-time
+          type: string
+        maintenance_window_end:
+          description: |-
+            MaintenanceWindowEnd represents UTC time in "hh:mm:ss" format of when the cluster will end its
+            maintenance tasks.
+          type: string
+        maintenance_window_start:
+          description: |-
+            MaintenanceWindowStart represents UTC time in "hh:mm:ss" format of when the cluster will start its
+            maintenance tasks.
+          type: string
+        pki_tree_updated_at:
+          description: |-
+            PKITreeUpdatedAt represents the timestamp in UTC timezone of when the PKI-tree of the cluster
+            has been updated.
+          format: date-time
+          type: string
+        cni_type:
+          description: CNI type represents type of CNI which is used in cluster.
+          type: string
+          enum:
+            - CALICO
+            - CILIUM
+        cni_cilium_settings:
+          $ref: '#/components/schemas/CNICiliumSettings'
+    ClusterResp:
+      description: Cluster response.
+      type: object
+      properties:
+        cluster:
+          $ref: '#/components/schemas/ClusterDetailed'
+    generic_not_found_error:
+      description: Generic message about not found error for any object.
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            id:
+              description: Object ID.
+              format: uuid4
+              type: string
+              example: 885D8D82-9D41-446B-84EA-BC3058E3F2C5
+            message:
+              description: Message of the error.
+              type: string
+              example: Unable find object by provided uuid
+          required:
+            - id
+            - message
+      required:
+        - error
+    ClusterUpdateStruct:
+      properties:
+        enable_patch_version_auto_upgrade:
+          description: |-
+            EnablePatchVersionAutoUpgrade specifies if Kubernetes version of the cluster is allowed to be upgraded
+            automatically.
+            Enabled by default for regional clusters and disabled for zonal clusters.
+          type: boolean
+        enable_autorepair:
+          description: EnableAutorepair reflects if worker nodes are allowed to be reinstalled  automatically in case of their unavailability or unhealthiness.
+          type: boolean
+          default: true
+        kubernetes_options:
+          $ref: '#/components/schemas/KubernetesOptions'
+        maintenance_window_start:
+          description: |-
+            MaintenanceWindowStart represents UTC time of when the cluster will start its maintenance tasks.
+            It should be in hh:mm:ss format if provided.
+          type: string
+        cni_cilium_settings:
+          $ref: '#/components/schemas/CNICiliumSettings'
+      type: object
+    ClusterUpdateBody:
+      description: |-
+        ClusterUpdateBody
+        represents body content.
+      properties:
+        cluster:
+          $ref: '#/components/schemas/ClusterUpdateStruct'
+    generic_no_content:
+      description: Generic no content response.
+      example: null
+    Action:
+      required:
+        - available
+        - reason
+      properties:
+        available:
+          description: Available set true when action is available for current object.
+          type: boolean
+        reason:
+          description: Reason explains why available is false, skipped when available is true.
+          x-omitempty: true
+          type: string
+      title: Action view.
+      type: object
+    ClusterActions:
+      required:
+        - add_nodegroup
+        - delete
+        - get_kubeconfig
+        - rotate_certificates
+        - update_audit_logs
+        - update_auto_repair
+        - update_maintenance_start
+        - update_oidc
+        - update_patch_auto_upgrade
+        - update_registries_integration
+        - upgrade_minor_version
+        - upgrade_patch_version
+      properties:
+        add_nodegroup:
+          $ref: '#/components/schemas/Action'
+        delete:
+          $ref: '#/components/schemas/Action'
+        get_kubeconfig:
+          $ref: '#/components/schemas/Action'
+        rotate_certificates:
+          $ref: '#/components/schemas/Action'
+        update_audit_logs:
+          $ref: '#/components/schemas/Action'
+        update_auto_repair:
+          $ref: '#/components/schemas/Action'
+        update_maintenance_start:
+          $ref: '#/components/schemas/Action'
+        update_oidc:
+          $ref: '#/components/schemas/Action'
+        update_patch_auto_upgrade:
+          $ref: '#/components/schemas/Action'
+        update_registries_integration:
+          $ref: '#/components/schemas/Action'
+        upgrade_minor_version:
+          $ref: '#/components/schemas/Action'
+        upgrade_patch_version:
+          $ref: '#/components/schemas/Action'
+      title: Cluster actions view.
+      type: object
+    ClusterActionsResp:
+      description: Available actions of the cluster.
+      type: object
+      properties:
+        actions:
+          $ref: '#/components/schemas/ClusterActions'
+    TaskErrorDetails:
+      title: Task error details view.
+      type: object
+      description: Provides information about error details of the task. Disabled by default, to enable use query parameter 'withErrorDetails=true'.
+      required:
+        - code
+        - name
+      properties:
+        code:
+          description: Represents task's error code.
+          format: int64
+          type: integer
+          example: 105
+        details:
+          description: Contains task's error helpful information.
+          type: string
+          example: some of the servers in the nodegroup have not been created or set up due to internal error
+        name:
+          description: Represents task's error short description.
+          type: string
+          example: PARTIAL_NODE_SETUP_FAILURE
+    Task:
+      description: Provides information about task.
+      type: object
+      required:
+        - id
+        - cluster_id
+        - started_at
+        - status
+        - type
+      properties:
+        id:
+          description: The identifier of the task.
+          format: uuid4
+          type: string
+          example: 506E0300-736A-11F0-B558-0800200C9A66
+        cluster_id:
+          description: Contains cluster identifier.
+          format: uuid4
+          type: string
+          example: 03C71900-736B-11F0-B558-0800200C9A66
+        nodegroup_id:
+          description: Contains nodegroup identifier.
+          format: uuid4
+          type: string
+          example: 09E3E2F0-736B-11F0-B558-0800200C9A66
+        started_at:
+          description: The timestamp in UTC timezone of when the task has been started.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        updated_at:
+          description: The timestamp in UTC timezone of when the task has been updated.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        status:
+          description: Represents current status of the task.
+          type: string
+          enum:
+            - IN_PROGRESS
+            - IN_QUEUE
+            - DONE
+            - ERROR
+            - CANCELED
+          example: IN_PROGRESS
+        type:
+          description: Represents task's type.
+          type: string
+          example: CREATE_CLUSTER
+        error_details:
+          $ref: '#/components/schemas/TaskErrorDetails'
+    TaskList:
+      description: Provides information about tasks of the cluster.
+      type: object
+      required:
+        - count
+        - tasks
+      properties:
+        count:
+          description: Count of all tasks of the cluster.
+          format: int64
+          type: integer
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    TaskResp:
+      description: Provides information about task of the cluster.
+      type: object
+      required:
+        - task
+      properties:
+        task:
+          $ref: '#/components/schemas/Task'
+    NodegroupTaint:
+      description: Represents k8s nodegroup taint that applies for every node in the group.
+      required:
+        - effect
+        - value
+        - key
+      properties:
+        effect:
+          description: Effect for taint.
+          type: string
+          enum:
+            - NoSchedule
+            - PreferNoSchedule
+            - NoExecute
+          example: NoSchedule
+        key:
+          description: Key for taint.
+          type: string
+          example: example_key
+        value:
+          description: Value for taint.
+          type: string
+          example: example_value
+      type: object
+    CloudNodegroupConfig:
+      description: Represents configuration for cloud based nodegroups.
+      properties:
+        affinity_policy:
+          description: An optional parameter to tune nodes affinity.
+          type: string
+          x-go-type-skip-optional-pointer: true
+        cpus:
+          description: |-
+            Represents CPU count for each node.
+            It can be omitted only in cases when flavor_id is set.
+          format: int64
+          type: integer
+          example: 5
+          x-go-type-skip-optional-pointer: true
+        flavor_id:
+          description: Contains reference to a pre-created flavor. It can be omitted in most cases.
+          type: string
+          example: 3031
+          x-go-type-skip-optional-pointer: true
+        keypair_name:
+          description: Contains name of the SSH key that will be added to all nodes.
+          type: string
+          x-go-type-skip-optional-pointer: true
+        local_volume:
+          description: Represents if nodes will use local volume.
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+        ram_mb:
+          description: |-
+            Represents RAM count in MB for each node.
+            It can be omitted only in cases when flavor_id is set.
+          format: int64
+          type: integer
+          example: 8128
+          x-go-type-skip-optional-pointer: true
+        volume_gb:
+          description: |-
+            Represents volume size in GB for each node.
+            It can be omitted only in cases when flavor_id is set and volume is local.
+          format: int64
+          type: integer
+          example: 128
+          x-go-type-skip-optional-pointer: true
+        volume_type:
+          description: |-
+            Represents blockstorage volume type for each node.
+            It can be omitted only in cases when flavor_id is set and volume is local.
+          type: string
+          example: universal.ru-9a
+          x-go-type-skip-optional-pointer: true
+      type: object
+    DedicatedNodegroupConfig:
+      description: Represents configuration for dedicated based nodegroups.
+      required:
+        - price_plan_uuid
+        - service_uuid
+      properties:
+        create_storage_partition:
+          default: true
+          description: Determines is storage partition should be created on fastest disk.
+          type: boolean
+        currency:
+          description: |-
+            Represents which balance will be used to order new servers.
+            ## Note 💡
+            ```
+            main - to use main balance. This option will be used as default.
+            bonus - to use bonus balance.
+            ```
+          default: main
+          enum:
+            - main
+            - bonus
+          example: main
+          type: string
+        price_plan_uuid:
+          type: string
+          format: uuid4
+          example: 3E060EE6-D55A-46C7-89D0-83F8E0839AB9
+        root_size_gb:
+          default: 100
+          description: RootSizeGB represents size of "/" partition on dedicated nodes.
+          format: int64
+          type: integer
+        service_uuid:
+          type: string
+          format: uuid4
+          example: 72053A3B-3AF3-45DB-9313-5DB7B57923C2
+      type: object
+    Node:
+      description: Provides information about node.
+      type: object
+      required:
+        - id
+        - created_at
+        - hostname
+        - ip
+        - nodegroup_id
+        - provider_server_id
+      properties:
+        id:
+          description: Uniq identifier of the node.
+          type: string
+          format: uuid4
+          example: 75A8CD59-2E4B-4C8B-ABF0-379DDC50CCE3
+        created_at:
+          description: Timestamp in UTC timezone of when the node has been created.
+          type: string
+          format: date-time
+          example: '2019-11-04T10:21:11.943917Z'
+        updated_at:
+          description: Timestamp in UTC timezone of when the node has been updated.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        hostname:
+          description: Represents a hostname of the node.
+          type: string
+          example: super-mks-cluster-k8s-node-asdfg
+        ip:
+          description: Represents IP address of the node.
+          type: string
+          example: 10.40.0.153
+        nodegroup_id:
+          description: Contains nodegroup identifier.
+          format: uuid4
+          example: 7FEE2971-8A83-4487-A427-3867D1F88335
+          type: string
+        provider_server_id:
+          description: Contains server identifier in external provider (OpenStack, dedicated resource).
+          format: uuid4
+          type: string
+          example: 1620AC2D-7667-42F0-9F6D-A3A0ECA6E654
+    Nodegroup:
+      description: Provides information about nodegroup.
+      type: object
+      required:
+        - id
+        - cluster_id
+        - created_at
+        - status
+        - nodegroup_type
+        - enable_autoscale
+        - install_nvidia_device_plugin
+        - preemptible
+        - labels
+        - taints
+        - segment
+        - nodes
+      properties:
+        id:
+          description: Uniq identifier of the nodegroup.
+          type: string
+          format: uuid4
+          example: 7FEE2971-8A83-4487-A427-3867D1F88335
+        cluster_id:
+          description: Uniq identifier of the cluster.
+          type: string
+          format: uuid4
+          example: E3EF1AD7-DF11-49C3-BD16-8725902325BC
+        created_at:
+          description: Timestamp in UTC timezone of when the nodegroup has been created.
+          type: string
+          format: date-time
+          example: '2019-11-04T10:21:11.943917Z'
+        updated_at:
+          description: Timestamp in UTC timezone of when the nodegroup has been updated.
+          format: date-time
+          type: string
+          example: '2019-11-04T10:21:11.943917Z'
+        status:
+          description: Represents current status of the nodegroup.
+          type: string
+          enum:
+            - ACTIVE
+            - PENDING_CREATE
+            - PENDING_UPDATE
+            - PENDING_DELETE
+            - PENDING_SCALE_UP
+            - PENDING_SCALE_DOWN
+            - PENDING_NODE_REINSTALL
+            - PENDING_NODES_UNSHELVE
+            - ERROR
+          example: ACTIVE
+        nodegroup_type:
+          description: 'Represents type of nodes in nodegroup. ## Note 💡 ` STANDARD      -- for all nodes from configs: standard line, cpu line, memory line; GPU           -- for nodes from gpu line; DEDICATED     -- for dedicated nodes; DEDICATED_GPU -- for dedicated nodes from gpu line; `'
+          type: string
+          enum:
+            - STANDARD
+            - GPU
+            - DEDICATED
+            - DEDICATED_GPU
+        enable_autoscale:
+          description: Reflects if the nodegroup is allowed to be scaled automatically.
+          type: boolean
+        autoscale_max_nodes:
+          description: Represents maximum possible number of worker nodes in the nodegroup.
+          format: int64
+          type: integer
+          example: 10
+        autoscale_min_nodes:
+          description: Represents minimum possible number of worker nodes in the nodegroup.
+          format: int64
+          type: integer
+          example: 0
+        segment:
+          description: Represents segment for all nodes in the nodegroup.
+          type: string
+          example: ru-9a
+        install_nvidia_device_plugin:
+          description: Indicates if nvidia device plugin installation was requested. Applicable only for nodegroups with GPU nodes.
+          type: boolean
+        preemptible:
+          description: Represents if nodes in the nodegroup are preemptible.
+          type: boolean
+        labels:
+          additionalProperties:
+            type: string
+          description: Represents an object containing a set of Kubernetes labels that will be applied for each node in the group. The keys must be user-defined.
+          type: object
+          example:
+            myFirstKey: myFirstValue
+            mySecondKey: mySecondValue
+        taints:
+          description: Represents a list of nodegroup taints.
+          items:
+            $ref: '#/components/schemas/NodegroupTaint'
+          type: array
+        cidr:
+          description: Represents a CIDR for nodegroup specified by client.
+          type: string
+          example: 10.0.1.0/24
+          x-skip-optional-pointer: true
+        cloud_nodegroup_config:
+          $ref: '#/components/schemas/CloudNodegroupConfig'
+        dedicated_nodegroup_config:
+          $ref: '#/components/schemas/DedicatedNodegroupConfig'
+        nodes:
+          description: Contains list of all nodes in the nodegroup.
+          items:
+            $ref: '#/components/schemas/Node'
+          type: array
+    NodegorupAdditionalInfo:
+      description: Provides additional information about nodegroup like userdata, etc.
+      type: object
+      properties:
+        user_data:
+          description: True when nodegroup has user_data field filled.
+          type: boolean
+          readOnly: true
+          x-omitempty: false
+          x-go-type-skip-optional-pointer: true
+    NodegroupListItem:
+      description: Provides information about nodegroup for list response.
+      type: object
+      required:
+        - id
+        - cluster_id
+        - created_at
+        - status
+        - nodegroup_type
+        - enable_autoscale
+        - install_nvidia_device_plugin
+        - preemptible
+        - labels
+        - taints
+        - segment
+        - nodes
+        - available_additional_info
+      allOf:
+        - $ref: '#/components/schemas/Nodegroup'
+        - type: object
+          required:
+            - available_additional_info
+          properties:
+            available_additional_info:
+              $ref: '#/components/schemas/NodegorupAdditionalInfo'
+    NodegroupList:
+      description: List of nodegroups of the cluster.
+      type: object
+      required:
+        - nodegroups
+      properties:
+        nodegroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodegroupListItem'
+    NodegroupCreateStruct:
+      required:
+        - pool
+        - count
+      properties:
+        pool:
+          description: Should contain the valid pool name where nodegroup nodes will be created.
+          type: string
+          example: SPB-5
+        count:
+          description: Count represents nodes count for this nodegroup.
+          format: int64
+          type: integer
+          example: 3
+        labels:
+          additionalProperties:
+            type: string
+          description: Represents an object containing a set of Kubernetes labels that will be applied for each node in the group. The keys must be user-defined.
+          type: object
+          example:
+            myFirstKey: myFirstValue
+            mySecondKey: mySecondValue
+        taints:
+          description: Represents a list of nodegroup taints.
+          items:
+            $ref: '#/components/schemas/NodegroupTaint'
+          type: array
+        dedicated_nodegroup_config:
+          $ref: '#/components/schemas/DedicatedNodegroupConfig'
+        cloud_nodegroup_config:
+          $ref: '#/components/schemas/CloudNodegroupConfig'
+        cidr:
+          description: Represents a CIDR for nodegroup specified by client.
+          type: string
+          example: 10.0.1.0/24
+          x-go-type-skip-optional-pointer: true
+        enable_autoscale:
+          description: Reflects if the nodegroup is allowed to be scaled automatically.
+          type: boolean
+        autoscale_max_nodes:
+          description: Represents maximum possible number of worker nodes in the nodegroup.
+          format: int64
+          type: integer
+        autoscale_min_nodes:
+          description: Represents minimum possible number of worker nodes in the nodegroup.
+          format: int64
+          type: integer
+        user_data:
+          description: Represents base64 data which is used to pass a script that worker nodes run on boot.
+          type: string
+          x-go-type-skip-optional-pointer: true
+        install_nvidia_device_plugin:
+          description: Indicates if nvidia device plugin installation was requested. Applicable only for nodegroups with GPU nodes.
+          type: boolean
+        preemptible:
+          description: Represents if nodes in the nodegroup are preemptible.
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+    NodegroupsCreateBody:
+      description: Represents body content for creating multiple nodegroups.
+      required:
+        - nodegroups
+      properties:
+        nodegroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodegroupCreateStruct'
+    NodegroupDetailed:
+      description: Provides detailed information about nodegroup.
+      type: object
+      required:
+        - id
+        - cluster_id
+        - created_at
+        - status
+        - nodegroup_type
+        - enable_autoscale
+        - install_nvidia_device_plugin
+        - preemptible
+        - labels
+        - taints
+        - segment
+        - nodes
+      allOf:
+        - $ref: '#/components/schemas/Nodegroup'
+        - type: object
+          properties:
+            user_data:
+              description: Represents base64 data which is used to pass a script that worker nodes run on boot.
+              type: string
+              readOnly: true
+              x-go-type-skip-optional-pointer: true
+    NodegroupResp:
+      description: Nodegroup response.
+      type: object
+      required:
+        - nodegroup
+      properties:
+        nodegroup:
+          $ref: '#/components/schemas/NodegroupDetailed'
+    NodegroupUpdateStruct:
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          description: Represents an object containing a set of Kubernetes labels that will be applied for each node in the group. The keys must be user-defined.
+          type: object
+          example:
+            myFirstKey: myFirstValue
+            mySecondKey: mySecondValue
+        taints:
+          description: Represents a list of nodegroup taints.
+          items:
+            $ref: '#/components/schemas/NodegroupTaint'
+          type: array
+        enable_autoscale:
+          description: Reflects if the cloud nodegroup is allowed to be scaled automatically.
+          type: boolean
+        autoscale_min_nodes:
+          description: Represents minimum possible number of worker nodes in the cloud nodegroup.
+          format: int
+          type: integer
+        autoscale_max_nodes:
+          description: Represents maximum possible number of worker nodes in the cloud nodegroup.
+          format: int
+          type: integer
+    NodegroupUpdateBody:
+      description: Represents body content.
+      required:
+        - nodegroup
+      properties:
+        nodegroup:
+          $ref: '#/components/schemas/NodegroupUpdateStruct'
+    NodegroupResizeStruct:
+      required:
+        - desired
+      properties:
+        desired:
+          description: Desired represents desired amount of nodes for this nodegroup.
+          format: int64
+          type: integer
+          example: 3
+    NodegroupResizeBody:
+      description: Represents body content.
+      required:
+        - nodegroup
+      properties:
+        nodegroup:
+          $ref: '#/components/schemas/NodegroupResizeStruct'
+    NodegroupActions:
+      required:
+        - resize
+        - delete
+        - update_labels
+        - update_taints
+        - update_autoscaling_min_max
+        - reinstall_node
+        - delete_node
+      properties:
+        resize:
+          $ref: '#/components/schemas/Action'
+        delete:
+          $ref: '#/components/schemas/Action'
+        update_labels:
+          $ref: '#/components/schemas/Action'
+        update_taints:
+          $ref: '#/components/schemas/Action'
+        update_autoscaling_min_max:
+          $ref: '#/components/schemas/Action'
+        reinstall_node:
+          $ref: '#/components/schemas/Action'
+        delete_node:
+          $ref: '#/components/schemas/Action'
+      title: Nodegroup actions view.
+      type: object
+    NodegroupActionsResp:
+      description: Available actions of the nodegroup.
+      type: object
+      properties:
+        actions:
+          $ref: '#/components/schemas/NodegroupActions'
+    NodeResp:
+      description: Node response.
+      type: object
+      required:
+        - node
+      properties:
+        node:
+          $ref: '#/components/schemas/Node'
+    RegistryWithMeta:
+      description: Registry integration with metadata.
+      title: Registry with meta.
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: Represents unique identifier of the registry.
+          example: C0523FA7-0BE5-4B9C-9EEA-78EC4CC7204B
+          type: string
+        name:
+          description: Represents name of the registry.
+          example: my-registry
+          type: string
+    RegistriesIntegration:
+      description: Registries integration of the cluster.
+      type: object
+      required:
+        - status
+        - registries
+      properties:
+        registries:
+          items:
+            $ref: '#/components/schemas/RegistryWithMeta'
+          type: array
+        status:
+          description: Status represents status of the registries' integration.
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - ERROR
+            - PENDING_CREATE
+            - PENDING_UPDATE
+            - PENDING_DELETE
+            - DELETED
+            - UNKNOWN
+    RegistriesIntergrationUpdateStruct:
+      required:
+        - id
+      properties:
+        id:
+          description: Represents unique identifier of the registry.
+          example: C0523FA7-0BE5-4B9C-9EEA-78EC4CC7204B
+          type: string
+    RegistriesIntergrationUpdateBody:
+      description: Represents body content.
+      required:
+        - registries
+      properties:
+        registries:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistriesIntergrationUpdateStruct'
+    RegistriesIntergrationCreateStruct:
+      required:
+        - id
+      properties:
+        id:
+          description: Represents unique identifier of the registry.
+          example: C0523FA7-0BE5-4B9C-9EEA-78EC4CC7204B
+          type: string
+    RegistriesIntergrationCreateBody:
+      description: Represents body content.
+      required:
+        - registries
+      properties:
+        registries:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistriesIntergrationCreateStruct'
+    OptionNamesAC:
+      description: List of available admission controllers.
+      type: array
+      example:
+        - AlwaysPullImages
+        - CertificateApproval
+        - CertificateSigning
+      items:
+        type: string
+    AvailableAdmissionControllers:
+      description: |-
+        AvailableAdmissionControllers represents detailed info about available admission controllers
+        for every k8s minor version.
+      type: object
+      properties:
+        kube_version_minor:
+          description: Kubernetes minor version.
+          type: string
+          example: '1.32'
+        names:
+          $ref: '#/components/schemas/OptionNamesAC'
+    AdmissionControllersList:
+      description: List of available admission controllers.
+      type: object
+      properties:
+        admission_controllers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableAdmissionControllers'
+    KubeVersion:
+      description: Kubernetes version information.
+      title: Version view.
+      type: object
+      x-go-name: KubeVersionInfo
+      properties:
+        version:
+          description: 'Supported Kubernetes version in format: "X.Y.Z"'
+          readOnly: true
+          type: string
+          x-order: 1
+        is_default:
+          description: Flag indicates if kubernetes version is default.
+          readOnly: true
+          type: boolean
+          x-order: 2
+    KubeVersionsList:
+      description: List of supported Kubernetes versions.
+      type: object
+      properties:
+        kube_versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubeVersion'
+    OptionNamesFG:
+      description: List of available feature gate names.
+      type: array
+      items:
+        type: string
+    AvailableFeatureGates:
+      description: |-
+        AvailableFeatureGates represents detailed info about available feature gates
+        for every k8s minor version.
+      type: object
+      properties:
+        kube_version_minor:
+          description: Kubernetes minor version.
+          type: string
+        names:
+          $ref: '#/components/schemas/OptionNamesFG'
+    FeatureGatesList:
+      description: List of available feature gates.
+      type: object
+      properties:
+        feature_gates:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableFeatureGates'
+    ResourceUsage:
+      description: Project resource usage.
+      properties:
+        clusters_count:
+          description: Amount of clusters in the project
+          format: int64
+          type: integer
+          example: 2
+        nodegroups_count:
+          description: Amount of nodegroups in the project
+          format: int64
+          type: integer
+          example: 5
+      type: object
+    ClustersLimits:
+      required:
+        - basic_clusters_limit
+        - high_availability_clusters_limit
+      properties:
+        basic_clusters_limit:
+          description: Represents the minimum number of basic clusters in project.
+          type: integer
+          example: 10
+        high_availability_clusters_limit:
+          description: Represents the maximum number of high-availability clusters in project.
+          type: integer
+          example: 10
+      type: object
+    ExtendedWorkerNodeLimits:
+      properties:
+        cpu_drive_coefficient:
+          description: |-
+            Represents calculation coefficient for local drives relative to the number of CPUs.
+            The final limit will be calculated using the formula: cpu_number * cpu_drive_coefficient
+          type: integer
+        cpu_ram_coefficient:
+          description: |-
+            Represents calculation coefficient for RAM size relative to the number of CPUs.
+            The final limit will be calculated using the formula: cpu_number * cpu_ram_coefficient
+          type: integer
+        max_local_drive_gb_per_node:
+          description: |-
+            Represents maximum local volume size in Gigabytes for each worker-node.
+            For network-attached volumes will be used default limits.
+          type: integer
+        max_ram_mb_per_node:
+          description: Represents maximum RAM size in Megabytes for each worker-node.
+          type: integer
+        min_local_drive_gb_per_node:
+          description: |-
+            Represents minimum local volume size in Gigabytes for each worker-node.
+            For network-attached volumes will be used default limits.
+          type: integer
+        min_ram_mb_per_node:
+          description: Represents minimum RAM size in Megabytes for each worker-node.
+          type: integer
+      type: object
+    NodegroupLimits:
+      required:
+        - max_nodegroups_per_pool
+        - max_nodes_per_nodegroup
+        - min_nodes_per_dedicated_nodegroup
+        - min_nodes_per_nodegroup
+      properties:
+        max_nodegroups_per_pool:
+          description: Represents maximum number of nodegroups in the pool.
+          type: integer
+          example: 100
+        max_nodes_per_nodegroup:
+          description: Represents the maximum number of nodes in nodegroup.
+          type: integer
+          example: 15
+        min_nodes_per_dedicated_nodegroup:
+          description: Represents the minimum number of nodes in dedicated nodegroup.
+          type: integer
+          example: 1
+        min_nodes_per_nodegroup:
+          description: Represents the minimum number of nodes in nodegroup.
+          type: integer
+          example: 0
+      type: object
+    WorkerNodeLimits:
+      required:
+        - max_cpus_per_node
+        - max_ram_mb_per_node
+        - max_volume_gb_per_node
+        - min_cpus_per_node
+        - min_ram_mb_per_node
+        - min_volume_gb_per_node
+      properties:
+        max_cpus_per_node:
+          description: Represents the maximum number of CPUs for each worker-node.
+          type: integer
+          example: 32
+        max_ram_mb_per_node:
+          description: Represents maximum RAM size in Megabytes for each worker-node.
+          type: integer
+          example: 262144
+        max_volume_gb_per_node:
+          description: Represents maximum volume size in Gigabytes for each worker-node.
+          type: integer
+          example: 1230
+        min_cpus_per_node:
+          description: Represents the minimum number of CPUs for each worker-node.
+          type: integer
+          example: 1
+        min_ram_mb_per_node:
+          description: Represents minimum RAM size in Megabytes for each worker-node.
+          type: integer
+          example: 1024
+        min_volume_gb_per_node:
+          description: Represents minimum volume size in Gigabytes for each worker-node.
+          type: integer
+          example: 20
+      type: object
+    LimitsList:
+      description: Default limits list
+      required:
+        - cluster
+        - nodegroup
+        - worker_node
+      properties:
+        cluster:
+          $ref: '#/components/schemas/ClustersLimits'
+        extended_limits:
+          additionalProperties:
+            $ref: '#/components/schemas/ExtendedWorkerNodeLimits'
+          description: Represents flexible limits rules.
+          type: object
+          example:
+            cpus_equal_to_32:
+              min_ram_mb_per_node: 65536
+              max_ram_mb_per_node: 262144
+              min_local_drive_gb_per_node: 1024
+              max_local_drive_gb_per_node: 1230
+            cpus_less_than_9:
+              min_ram_mb_per_node: 4096
+              max_ram_mb_per_node: 262144
+              max_local_drive_gb_per_node: 1230
+            cpus_more_or_equal_to_9:
+              max_ram_mb_per_node: 262144
+              max_local_drive_gb_per_node: 1230
+              cpu_drive_coefficient: 32
+              cpu_ram_coefficient: 2048
+        nodegroup:
+          $ref: '#/components/schemas/NodegroupLimits'
+        worker_node:
+          $ref: '#/components/schemas/WorkerNodeLimits'
+      type: object
+  parameters:
+    cluster_id:
+      description: Uniq cluster identifier.
+      in: path
+      name: cluster_id
+      required: true
+      schema:
+        type: string
+      example: 526338B6-1100-4FB3-AD09-5CD268E5E674
+    lang:
+      description: Language on which response should be returned.
+      in: query
+      name: lang
+      schema:
+        type: string
+        enum:
+          - ru
+          - en
+        default: en
+    limit:
+      description: Limit of elements in response.
+      in: query
+      name: limit
+      schema:
+        type: integer
+        format: uint64
+    offset:
+      description: Number of elements to skip.
+      in: query
+      name: offset
+      schema:
+        type: integer
+        format: uint64
+        default: 0
+    with_error_details:
+      description: Flag to show error details at task view.
+      in: query
+      name: with_error_details
+      schema:
+        type: boolean
+        default: false
+    task_id:
+      description: Uniq task identifier.
+      in: path
+      name: task_id
+      required: true
+      schema:
+        type: string
+      example: 526338B6-1100-4FB3-AD09-5CD268E5E674
+    nodegroup_id:
+      description: Uniq nodegroup identifier.
+      in: path
+      name: nodegroup_id
+      required: true
+      schema:
+        type: string
+      example: B36D6C34-318D-4EC1-833D-384197F24385
+    node_id:
+      description: Uniq node identifier.
+      in: path
+      name: node_id
+      required: true
+      schema:
+        type: string
+      example: 75A8CD59-2E4B-4C8B-ABF0-379DDC50CCE3
+    registry_id:
+      description: Uniq registry identifier.
+      in: path
+      name: registry_id
+      required: true
+      schema:
+        type: string
+      example: C0523FA7-0BE5-4B9C-9EEA-78EC4CC7204B
+    kube_version:
+      description: Version of Kubernetes for which response should be returned.
+      in: query
+      name: kube_version
+      schema:
+        type: string
+      example: 1.33

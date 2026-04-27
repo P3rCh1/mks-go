@@ -1,0 +1,62 @@
+version: 2
+
+run:
+  timeout: 5m
+  skip-path-patterns:
+    - "**/*.gen.go"
+
+linters:
+  fast: false
+  disable-all: true
+  enable:
+    - asciicheck
+    - cyclop
+    - dogsled
+    - durationcheck
+    - errcheck
+    - errname
+    - errorlint
+    - exhaustive
+    - forbidigo
+    - forcetypeassert
+    - goconst
+    - gocritic
+    - godot
+    - goheader
+    - goprintffuncname
+    - govet
+    - importas
+    - ineffassign
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nilerr
+    - nlreturn
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - promlinter
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - tparallel
+    - unconvert
+    - unparam
+    - unused
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  cyclop:
+    max-complexity: 9
+  godot:
+    scope: declarations
+  funlen:
+    statements: 65
+  nestif:
+    min-complexity: 5
+  nlreturn:
+    block-size: 3
