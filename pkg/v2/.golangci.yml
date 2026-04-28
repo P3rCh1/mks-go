@@ -4,6 +4,7 @@ run:
   timeout: 5m
   skip-path-patterns:
     - "**/*.gen.go"
+    - "fixtures.go"
 
 linters:
   fast: false
@@ -23,6 +24,8 @@ linters:
     - gocritic
     - godot
     - goheader
+    - gomoddirectives
+    - gomodguard
     - goprintffuncname
     - govet
     - importas
@@ -49,6 +52,13 @@ linters:
     - wastedassign
     - whitespace
 
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+
 linters-settings:
   cyclop:
     max-complexity: 9
@@ -56,6 +66,8 @@ linters-settings:
     scope: declarations
   funlen:
     statements: 65
+  gci:
+    local-prefixes: github.com/selectel/mks-go/v2
   nestif:
     min-complexity: 5
   nlreturn:
