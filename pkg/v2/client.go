@@ -56,9 +56,16 @@ func getAppVersion() string {
 		return "0.0.0"
 	}
 
-	version, _ := strings.CutPrefix(info.Main.Version, "v")
+	selfPath := "github.com/selectel/mks-go/pkg/v2"
+	for _, dep := range info.Deps {
+		if dep.Path == selfPath {
+			version, _ := strings.CutPrefix(dep.Version, "v")
 
-	return version
+			return version
+		}
+	}
+
+	return "0.0.0"
 }
 
 // ServiceClient stores details that are needed to work with Selectel Managed Kubernetes Service API.
