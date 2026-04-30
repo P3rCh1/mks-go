@@ -38,6 +38,12 @@ const (
 	// defaultExpectContinueTimeout represents the default amount of time to wait for a server's first
 	// response headers.
 	defaultExpectContinueTimeout = 1
+
+	// selfPath represents the package self path.
+	selfPath = "github.com/selectel/mks-go/pkg/v2"
+
+	// defaultVersion represents the default version.
+	defaultVersion = "0.0.0"
 )
 
 var (
@@ -49,16 +55,22 @@ var (
 )
 
 // appVersion tries to get the app version.
-// If impossible to get build info, appVersion returns the "0.0.0".
+// If impossible to get build info, appVersion returns defaultVersion.
 func getAppVersion() string {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return "0.0.0"
+		return defaultVersion
 	}
 
-	version, _ := strings.CutPrefix(info.Main.Version, "v")
+	for _, dep := range info.Deps {
+		if dep.Path == selfPath {
+			version, _ := strings.CutPrefix(dep.Version, "v")
 
-	return version
+			return version
+		}
+	}
+
+	return defaultVersion
 }
 
 // ServiceClient stores details that are needed to work with Selectel Managed Kubernetes Service API.
