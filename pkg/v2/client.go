@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"runtime/debug"
+	"strings"
 	"time"
 
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
@@ -13,12 +15,6 @@ import (
 const (
 	// appName represents an application name.
 	appName = "mks-go/v2"
-
-	// appVersion is a version of the application.
-	appVersion = "0.1.0"
-
-	// userAgent contains a basic user agent that will be used in queries.
-	userAgent = appName + "/" + appVersion
 
 	// defaultHTTPTimeout represents the default timeout (in seconds) for HTTP requests.
 	defaultHTTPTimeout = 120
@@ -43,6 +39,27 @@ const (
 	// response headers.
 	defaultExpectContinueTimeout = 1
 )
+
+var (
+	// appVersion is a version of the application.
+	appVersion = getAppVersion()
+
+	// userAgent contains a basic user agent that will be used in queries.
+	userAgent = appName + "/" + appVersion
+)
+
+// appVersion tries to get the app version.
+// If impossible to get build info, appVersion returns the "0.0.0".
+func getAppVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "0.0.0"
+	}
+
+	version, _ := strings.CutPrefix(info.Main.Version, "v")
+
+	return version
+}
 
 // ServiceClient stores details that are needed to work with Selectel Managed Kubernetes Service API.
 type ServiceClient struct {
