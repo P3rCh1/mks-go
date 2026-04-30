@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/selectel/mks-go/pkg/v2/mksclient"
+	"github.com/P3rCh1/mks-go/pkg/v2/mksclient"
 )
 
 const (

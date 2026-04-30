@@ -1,4 +1,4 @@
-module github.com/selectel/mks-go/pkg/v2
+module github.com/P3rCh1/mks-go/pkg/v2
 
 go 1.25.9
 

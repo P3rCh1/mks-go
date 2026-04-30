@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/mksclient"
+	v2 "github.com/P3rCh1/mks-go/pkg/v2"
+	"github.com/P3rCh1/mks-go/pkg/v2/mksclient"
 )
 
 // Get returns a single cluster by its id.
