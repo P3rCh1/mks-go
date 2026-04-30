@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/selectel/mks-go/v2/mksclient"
+	"github.com/selectel/mks-go/pkg/v2/mksclient"
 )
 
 const (
@@ -69,9 +69,6 @@ const (
 	// response headers.
 	defaultExpectContinueTimeout = 1
 )
-
-// ErrGotHTTPStatusCodeFmt is an error message format for unexpected HTTP status codes.
-const ErrGotHTTPStatusCodeFmt = "mks-go: got the %d status code from the server"
 
 // ServiceClient stores details that are needed to work with Selectel Managed Kubernetes Service API.
 type ServiceClient struct {
