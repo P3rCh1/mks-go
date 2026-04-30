@@ -2,6 +2,7 @@ package v2
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -58,21 +59,26 @@ type ServiceClient struct {
 }
 
 // NewMKSClientV2 initializes a new MKS client for the V2 API.
-func NewMKSClientV2(tokenID, endpoint string) *ServiceClient {
+func NewMKSClientV2(tokenID, endpoint string) (*ServiceClient, error) {
 	s := &ServiceClient{
 		TokenID:   tokenID,
 		Endpoint:  endpoint,
 		UserAgent: userAgent,
 	}
 
-	s.MKSClient = s.newMKSClient(newHTTPClient(), endpoint)
+	mksClient, err := s.newMKSClient(newHTTPClient(), endpoint)
+	if err != nil {
+		return nil, err
+	}
 
-	return s
+	s.MKSClient = mksClient
+
+	return s, nil
 }
 
 // NewMKSClientV2WithCustomHTTP initializes a new MKS client for the V2 API using custom HTTP client.
 // If custom HTTP client is nil - default HTTP client will be used.
-func NewMKSClientV2WithCustomHTTP(customHTTPClient *http.Client, tokenID, endpoint string) *ServiceClient {
+func NewMKSClientV2WithCustomHTTP(customHTTPClient *http.Client, tokenID, endpoint string) (*ServiceClient, error) {
 	if customHTTPClient == nil {
 		customHTTPClient = newHTTPClient()
 	}
@@ -83,9 +89,14 @@ func NewMKSClientV2WithCustomHTTP(customHTTPClient *http.Client, tokenID, endpoi
 		UserAgent: userAgent,
 	}
 
-	s.MKSClient = s.newMKSClient(customHTTPClient, endpoint)
+	mksClient, err := s.newMKSClient(customHTTPClient, endpoint)
+	if err != nil {
+		return nil, err
+	}
 
-	return s
+	s.MKSClient = mksClient
+
+	return s, nil
 }
 
 // newHTTPClient returns a reference to an initialized and configured HTTP client.
@@ -97,7 +108,7 @@ func newHTTPClient() *http.Client {
 }
 
 // newMKSClient returns a reference to an initialized and configured MKS client.
-func (s *ServiceClient) newMKSClient(httpClient *http.Client, endpoint string) *mksclient.ClientWithResponses {
+func (s *ServiceClient) newMKSClient(httpClient *http.Client, endpoint string) (*mksclient.ClientWithResponses, error) {
 	client, err := mksclient.NewClientWithResponses(
 		endpoint,
 		mksclient.WithHTTPClient(httpClient),
@@ -105,10 +116,10 @@ func (s *ServiceClient) newMKSClient(httpClient *http.Client, endpoint string) *
 		mksclient.WithRequestEditorFn(s.withAuthToken),
 	)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("create mks-client: %w", err)
 	}
 
-	return client
+	return client, nil
 }
 
 // withUserAgent adds User-Agent header to request.
