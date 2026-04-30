@@ -10,33 +10,6 @@ import (
 )
 
 const (
-	// ResourceURLCluster is the API resource path for clusters.
-	ResourceURLCluster = "clusters"
-	// ResourceURLKubeversion is the API resource path for Kubernetes versions.
-	ResourceURLKubeversion = "kubeversions"
-	// ResourceURLKubeconfig is the API resource path for kubeconfig.
-	ResourceURLKubeconfig = "kubeconfig"
-	// ResourceURLRotateCerts is the API resource path for certificate rotation.
-	ResourceURLRotateCerts = "rotate-certs"
-	// ResourceURLUpgradePatchVersion is the API resource path for patch version upgrade.
-	ResourceURLUpgradePatchVersion = "upgrade-patch-version"
-	// ResourceURLUpgradeMinorVersion is the API resource path for minor version upgrade.
-	ResourceURLUpgradeMinorVersion = "upgrade-minor-version"
-	// ResourceURLTask is the API resource path for tasks.
-	ResourceURLTask = "tasks"
-	// ResourceURLNodegroup is the API resource path for nodegroups.
-	ResourceURLNodegroup = "nodegroups"
-	// ResourceURLResize is the API resource path for resize operations.
-	ResourceURLResize = "resize"
-	// ResourceURLReinstall is the API resource path for reinstall operations.
-	ResourceURLReinstall = "reinstall"
-	// ResourceURLFeatureGates is the API resource path for feature gates.
-	ResourceURLFeatureGates = "feature-gates"
-	// ResourceURLAdmissionControllers is the API resource path for admission controllers.
-	ResourceURLAdmissionControllers = "admission-controllers"
-)
-
-const (
 	// appName represents an application name.
 	appName = "mks-go/v2"
 
