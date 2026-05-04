@@ -1,5 +1,7 @@
 package mksclient
 
+import "reflect"
+
 // MKSError is the custom error type for mks-go API errors.
 type MKSError struct {
 	StatusCode int
@@ -42,7 +44,10 @@ type APIError interface {
 func HandleAPIErrors(statusCode int, statusMsg string, errors ...APIError) error {
 	for _, err := range errors {
 		if err != nil {
-			return err.ToMKSError(statusCode)
+			val := reflect.ValueOf(err)
+			if val.Kind() == reflect.Pointer && !val.IsNil() {
+				return err.ToMKSError(statusCode)
+			}
 		}
 	}
 
