@@ -1,4 +1,4 @@
-package testing
+package mksclient
 
 import (
 	"net/http"
@@ -55,17 +55,10 @@ func TestGenericErrorNotFound_ToMKSError(t *testing.T) {
 	assert.Equal(t, code, mksErr.Status())
 }
 
-type invalidT struct{}
-
-func (i invalidT) ToMKSError(_ int) *mksclient.MKSError {
-	return &mksclient.MKSError{}
-}
-
 func TestHandleAPIErrors(t *testing.T) {
 	const (
-		code        = http.StatusInternalServerError
-		messageHTTP = "message http"
-
+		code                = http.StatusInternalServerError
+		messageHTTP         = "message http"
 		messageGenericError = "message generic"
 	)
 
@@ -95,20 +88,6 @@ func TestHandleAPIErrors(t *testing.T) {
 		assert.Equal(t, messageHTTP, mksErr.Error())
 		assert.Equal(t, code, mksErr.Status())
 	})
-
-	t.Run("skip non pointer error", func(t *testing.T) {
-		var errInvalid invalidT
-
-		err := mksclient.HandleAPIErrors(code, messageHTTP, errInvalid)
-		require.Error(t, err)
-
-		var mksErr *mksclient.MKSError
-		require.ErrorAs(t, err, &mksErr)
-
-		assert.Equal(t, messageHTTP, mksErr.Error())
-		assert.Equal(t, code, mksErr.Status())
-	})
-
 	t.Run("get generic error", func(t *testing.T) {
 		var (
 			genericErr         *mksclient.GenericError

@@ -89,20 +89,7 @@ type ServiceClient struct {
 
 // NewMKSClientV2 initializes a new MKS client for the V2 API.
 func NewMKSClientV2(tokenID, endpoint string) (*ServiceClient, error) {
-	s := &ServiceClient{
-		TokenID:   tokenID,
-		Endpoint:  endpoint,
-		UserAgent: userAgent,
-	}
-
-	mksClient, err := s.newMKSClient(newHTTPClient(), endpoint)
-	if err != nil {
-		return nil, err
-	}
-
-	s.MKSClient = mksClient
-
-	return s, nil
+	return NewMKSClientV2WithCustomHTTP(nil, tokenID, endpoint)
 }
 
 // NewMKSClientV2WithCustomHTTP initializes a new MKS client for the V2 API using custom HTTP client.
