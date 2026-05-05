@@ -1,4 +1,4 @@
-package testing
+package cluster
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"time"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/cluster"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -81,7 +80,7 @@ func TestGet(t *testing.T) {
 				},
 				JSON404: &mksclient.GenericNotFoundError{
 					Error: struct {
-						Id      string `json:"id"` //nolint:revive // it's generated struct //nolint:revive // it's generated struct
+						Id      string `json:"id"` //nolint:revive // it's generated struct
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
@@ -119,7 +118,7 @@ func TestGet(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().GetClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			cluster, err := cluster.Get(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			cluster, err := Get(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				assert.Nil(t, cluster)
@@ -227,7 +226,7 @@ func TestCreate(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().CreateClusterV2WithResponse(mock.Anything, mock.Anything).Return(test.clientResponce, test.clientError)
 
-			cluster, err := cluster.Create(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, nil)
+			cluster, err := Create(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, nil)
 
 			if test.errExpected != nil {
 				assert.Nil(t, cluster)
@@ -334,7 +333,7 @@ func TestUpdate(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().UpdateClusterV2WithResponse(mock.Anything, clusterID, mock.Anything).Return(test.clientResponce, test.clientError)
 
-			cluster, err := cluster.Update(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID, nil)
+			cluster, err := Update(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID, nil)
 
 			if test.errExpected != nil {
 				assert.Nil(t, cluster)
@@ -452,7 +451,7 @@ func TestDelete(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().DeleteClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			err := cluster.Delete(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			err := Delete(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				require.Error(t, err)
@@ -566,7 +565,7 @@ func TestGetKubeconfig(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().GetClusterKubeconfigV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			kubeconfig, err := cluster.GetKubeconfig(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			kubeconfig, err := GetKubeconfig(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				require.Error(t, err)
@@ -683,7 +682,7 @@ func TestRotateCerts(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().RotateClusterCertsV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			err := cluster.RotateCerts(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			err := RotateCerts(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				require.Error(t, err)
@@ -810,7 +809,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().UpgradePatchVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			cluster, err := cluster.UpgradePatchVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			cluster, err := UpgradePatchVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				assert.Nil(t, cluster)
@@ -939,7 +938,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().UpgradeMinorVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
 
-			cluster, err := cluster.UpgradeMinorVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
+			cluster, err := UpgradeMinorVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
 			if test.errExpected != nil {
 				assert.Nil(t, cluster)

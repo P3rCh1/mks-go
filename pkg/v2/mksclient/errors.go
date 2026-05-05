@@ -16,6 +16,11 @@ func (e MKSError) Error() string {
 	return e.Message
 }
 
+// APIError is the interface for convertable to MKSError types.
+type APIError interface {
+	ToMKSError(statusCode int) *MKSError
+}
+
 // ToMKSError converts to an MKSError with the given status code.
 func (e *GenericError) ToMKSError(statusCode int) *MKSError {
 	if e == nil {
@@ -38,11 +43,6 @@ func (e *GenericNotFoundError) ToMKSError(statusCode int) *MKSError {
 		StatusCode: statusCode,
 		Message:    e.Error.Message,
 	}
-}
-
-// APIError is the interface for convertable to MKSError types.
-type APIError interface {
-	ToMKSError(statusCode int) *MKSError
 }
 
 // HandleAPIErrors processes a list of possible API errors and returns the first one found.

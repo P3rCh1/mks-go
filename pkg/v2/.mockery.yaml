@@ -11,4 +11,3 @@ packages:
   github.com/selectel/mks-go/pkg/v2:
     config:
       recursive: True
-      
