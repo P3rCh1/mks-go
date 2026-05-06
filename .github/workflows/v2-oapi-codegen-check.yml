@@ -1,4 +1,4 @@
-name: oapi-codegen Check v2
+name: Check oapi-codegen v2
 on:
   push:
     branches:
@@ -22,4 +22,4 @@ jobs:
         run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
       - name: Check oapi-codegen
-        run: cd pkg/v2 make check-oapi
+        run: cd pkg/v2 && make check-oapi
