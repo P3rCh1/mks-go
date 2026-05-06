@@ -1,14 +1,16 @@
-version: 2
+version: "2"
 
 run:
   timeout: 5m
-  skip-path-patterns:
-    - "**/*.gen.go"
-    - "fixtures.go"
+  tests: true
 
 linters:
-  fast: false
-  disable-all: true
+  default: "none"
+  exclusions:
+    paths:
+      - ".*\\.gen\\.go"
+      - "fixtures\\.go"
+
   enable:
     - asciicheck
     - cyclop
@@ -52,23 +54,31 @@ linters:
     - wastedassign
     - whitespace
 
+  settings:
+    cyclop:
+      max-complexity: 9
+    funlen:
+      statements: 65
+    nestif:
+      min-complexity: 5
+    nlreturn:
+      block-size: 3
+
 formatters:
+  exclusions:
+    paths:
+      - ".*\\.gen\\.go"
+      - "fixtures\\.go"
+
   enable:
     - gci
     - gofmt
     - gofumpt
     - goimports
 
-linters-settings:
-  cyclop:
-    max-complexity: 9
-  godot:
-    scope: declarations
-  funlen:
-    statements: 65
-  gci:
-    local-prefixes: github.com/selectel/mks-go/v2
-  nestif:
-    min-complexity: 5
-  nlreturn:
-    block-size: 3
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/selectel/mks-go/v2)
