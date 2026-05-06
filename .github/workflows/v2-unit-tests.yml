@@ -7,7 +7,7 @@ on:
 
 jobs:
   unit-test:
-    name: unittests
+    name: unit-tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
