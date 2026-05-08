@@ -27,4 +27,4 @@ jobs:
         run: cd pkg/v2 && make check-mockery
 
       - name: Run test
-        run: cd pkg/v2 && make unittest
+        run: cd pkg/v2 && sh -c "'$(CURDIR)/scripts/check_mockery.sh'"
