@@ -15,6 +15,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func ptr[T any](value T) *T {
+	return &value
+}
+
 func TestGet(t *testing.T) {
 	const clusterID = "test-cluster-id"
 
@@ -372,17 +376,13 @@ func TestDelete(t *testing.T) {
 	}{
 		{
 			name: "success",
-			clientResponse: func() *mksclient.DeleteClusterV2Response {
-				var v interface{} = struct{}{}
-
-				return &mksclient.DeleteClusterV2Response{
-					HTTPResponse: &http.Response{
-						StatusCode: http.StatusNoContent,
-						Status:     http.StatusText(http.StatusNoContent),
-					},
-					JSON204: &v,
-				}
-			}(),
+			clientResponse: &mksclient.DeleteClusterV2Response{
+				HTTPResponse: &http.Response{
+					StatusCode: http.StatusNoContent,
+					Status:     http.StatusText(http.StatusNoContent),
+				},
+				JSON204: ptr(any(struct{}{})),
+			},
 		},
 		{
 			name: "not found",
@@ -603,17 +603,13 @@ func TestRotateCerts(t *testing.T) {
 	}{
 		{
 			name: "success",
-			clientResponse: func() *mksclient.RotateClusterCertsV2Response {
-				var v interface{} = struct{}{}
-
-				return &mksclient.RotateClusterCertsV2Response{
-					HTTPResponse: &http.Response{
-						StatusCode: http.StatusNoContent,
-						Status:     http.StatusText(http.StatusNoContent),
-					},
-					JSON204: &v,
-				}
-			}(),
+			clientResponse: &mksclient.RotateClusterCertsV2Response{
+				HTTPResponse: &http.Response{
+					StatusCode: http.StatusNoContent,
+					Status:     http.StatusText(http.StatusNoContent),
+				},
+				JSON204: ptr(any(struct{}{})),
+			},
 		},
 		{
 			name: "not found",
