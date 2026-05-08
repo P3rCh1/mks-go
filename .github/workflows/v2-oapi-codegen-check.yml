@@ -22,4 +22,4 @@ jobs:
         run: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.6.0
 
       - name: Check oapi-codegen
-        run: cd pkg/v2 && sh -c "'$(CURDIR)/scripts/check_oapi.sh'"
+        run: cd pkg/v2 && sh -c "'./scripts/check_oapi.sh'"
