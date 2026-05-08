@@ -22,13 +22,13 @@ func TestGet(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.GetClusterV2Response
+		clientResponse *mksclient.GetClusterV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.GetClusterV2Response{
+			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
 					Status:     http.StatusText(http.StatusOK),
@@ -53,7 +53,7 @@ func TestGet(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.GetClusterV2Response{
+			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -73,7 +73,7 @@ func TestGet(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.GetClusterV2Response{
+			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -95,7 +95,7 @@ func TestGet(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.GetClusterV2Response{
+			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -116,7 +116,7 @@ func TestGet(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().GetClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().GetClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			cluster, err := Get(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -140,7 +140,7 @@ func TestGet(t *testing.T) {
 
 			require.NoError(t, err)
 
-			assert.Equal(t, test.clientResponce.JSON200.Cluster, cluster)
+			assert.Equal(t, test.clientResponse.JSON200.Cluster, cluster)
 		})
 	}
 }
@@ -152,13 +152,13 @@ func TestCreate(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.CreateClusterV2Response
+		clientResponse *mksclient.CreateClusterV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.CreateClusterV2Response{
+			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusCreated,
 					Status:     http.StatusText(http.StatusCreated),
@@ -183,7 +183,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.CreateClusterV2Response{
+			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -203,7 +203,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.CreateClusterV2Response{
+			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -224,7 +224,7 @@ func TestCreate(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().CreateClusterV2WithResponse(mock.Anything, mock.Anything).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().CreateClusterV2WithResponse(mock.Anything, mock.Anything).Return(test.clientResponse, test.clientError)
 
 			cluster, err := Create(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, nil)
 
@@ -247,7 +247,7 @@ func TestCreate(t *testing.T) {
 			}
 
 			require.NoError(t, err)
-			assert.Equal(t, test.clientResponce.JSON201.Cluster, cluster)
+			assert.Equal(t, test.clientResponse.JSON201.Cluster, cluster)
 		})
 	}
 }
@@ -259,13 +259,13 @@ func TestUpdate(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.UpdateClusterV2Response
+		clientResponse *mksclient.UpdateClusterV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.UpdateClusterV2Response{
+			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
 					Status:     http.StatusText(http.StatusOK),
@@ -290,7 +290,7 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.UpdateClusterV2Response{
+			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -310,7 +310,7 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.UpdateClusterV2Response{
+			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -331,7 +331,7 @@ func TestUpdate(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().UpdateClusterV2WithResponse(mock.Anything, clusterID, mock.Anything).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().UpdateClusterV2WithResponse(mock.Anything, clusterID, mock.Anything).Return(test.clientResponse, test.clientError)
 
 			cluster, err := Update(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID, nil)
 
@@ -354,7 +354,7 @@ func TestUpdate(t *testing.T) {
 			}
 
 			require.NoError(t, err)
-			assert.Equal(t, test.clientResponce.JSON200.Cluster, cluster)
+			assert.Equal(t, test.clientResponse.JSON200.Cluster, cluster)
 		})
 	}
 }
@@ -366,13 +366,13 @@ func TestDelete(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.DeleteClusterV2Response
+		clientResponse *mksclient.DeleteClusterV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: func() *mksclient.DeleteClusterV2Response {
+			clientResponse: func() *mksclient.DeleteClusterV2Response {
 				var v interface{} = struct{}{}
 
 				return &mksclient.DeleteClusterV2Response{
@@ -386,7 +386,7 @@ func TestDelete(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.DeleteClusterV2Response{
+			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -408,7 +408,7 @@ func TestDelete(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.DeleteClusterV2Response{
+			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -428,7 +428,7 @@ func TestDelete(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.DeleteClusterV2Response{
+			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -449,7 +449,7 @@ func TestDelete(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().DeleteClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().DeleteClusterV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			err := Delete(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -484,13 +484,13 @@ func TestGetKubeconfig(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.GetClusterKubeconfigV2Response
+		clientResponse *mksclient.GetClusterKubeconfigV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.GetClusterKubeconfigV2Response{
+			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
 					Status:     http.StatusText(http.StatusOK),
@@ -500,7 +500,7 @@ func TestGetKubeconfig(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.GetClusterKubeconfigV2Response{
+			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -522,7 +522,7 @@ func TestGetKubeconfig(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.GetClusterKubeconfigV2Response{
+			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -542,7 +542,7 @@ func TestGetKubeconfig(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.GetClusterKubeconfigV2Response{
+			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -563,7 +563,7 @@ func TestGetKubeconfig(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().GetClusterKubeconfigV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().GetClusterKubeconfigV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			kubeconfig, err := GetKubeconfig(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -585,7 +585,7 @@ func TestGetKubeconfig(t *testing.T) {
 			}
 
 			require.NoError(t, err)
-			assert.Equal(t, test.clientResponce.Body, kubeconfig)
+			assert.Equal(t, test.clientResponse.Body, kubeconfig)
 		})
 	}
 }
@@ -597,13 +597,13 @@ func TestRotateCerts(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.RotateClusterCertsV2Response
+		clientResponse *mksclient.RotateClusterCertsV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: func() *mksclient.RotateClusterCertsV2Response {
+			clientResponse: func() *mksclient.RotateClusterCertsV2Response {
 				var v interface{} = struct{}{}
 
 				return &mksclient.RotateClusterCertsV2Response{
@@ -617,7 +617,7 @@ func TestRotateCerts(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.RotateClusterCertsV2Response{
+			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -639,7 +639,7 @@ func TestRotateCerts(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.RotateClusterCertsV2Response{
+			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -659,7 +659,7 @@ func TestRotateCerts(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.RotateClusterCertsV2Response{
+			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -680,7 +680,7 @@ func TestRotateCerts(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().RotateClusterCertsV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().RotateClusterCertsV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			err := RotateCerts(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -713,13 +713,13 @@ func TestUpgradePatchVersion(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.UpgradePatchVersionV2Response
+		clientResponse *mksclient.UpgradePatchVersionV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.UpgradePatchVersionV2Response{
+			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
 					Status:     http.StatusText(http.StatusOK),
@@ -744,7 +744,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.UpgradePatchVersionV2Response{
+			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -766,7 +766,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.UpgradePatchVersionV2Response{
+			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -786,7 +786,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.UpgradePatchVersionV2Response{
+			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -807,7 +807,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().UpgradePatchVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().UpgradePatchVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			cluster, err := UpgradePatchVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -830,7 +830,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 			}
 
 			require.NoError(t, err)
-			assert.Equal(t, test.clientResponce.JSON200.Cluster, cluster)
+			assert.Equal(t, test.clientResponse.JSON200.Cluster, cluster)
 		})
 	}
 }
@@ -842,13 +842,13 @@ func TestUpgradeMinorVersion(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		clientResponce *mksclient.UpgradeMinorVersionV2Response
+		clientResponse *mksclient.UpgradeMinorVersionV2Response
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: "success",
-			clientResponce: &mksclient.UpgradeMinorVersionV2Response{
+			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
 					Status:     http.StatusText(http.StatusOK),
@@ -873,7 +873,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 		},
 		{
 			name: "not found",
-			clientResponce: &mksclient.UpgradeMinorVersionV2Response{
+			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
 					Status:     http.StatusText(http.StatusNotFound),
@@ -895,7 +895,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 		},
 		{
 			name: "internal server error",
-			clientResponce: &mksclient.UpgradeMinorVersionV2Response{
+			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
 					Status:     http.StatusText(http.StatusInternalServerError),
@@ -915,7 +915,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 		},
 		{
 			name: "unknown status",
-			clientResponce: &mksclient.UpgradeMinorVersionV2Response{
+			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
 					Status:     http.StatusText(http.StatusServiceUnavailable),
@@ -936,7 +936,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
-			mksClient.EXPECT().UpgradeMinorVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponce, test.clientError)
+			mksClient.EXPECT().UpgradeMinorVersionV2WithResponse(mock.Anything, clusterID).Return(test.clientResponse, test.clientError)
 
 			cluster, err := UpgradeMinorVersion(context.Background(), &v2.ServiceClient{MKSClient: mksClient}, clusterID)
 
@@ -959,7 +959,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 			}
 
 			require.NoError(t, err)
-			assert.Equal(t, test.clientResponce.JSON200.Cluster, cluster)
+			assert.Equal(t, test.clientResponse.JSON200.Cluster, cluster)
 		})
 	}
 }
