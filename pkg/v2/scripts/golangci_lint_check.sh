@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "==> Running golangci-lint..."
-golangci-lint run ./...
+go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.4 run ./...
 if [ $? -eq 1 ]; then
     echo ""
     echo "Golangci-lint found suspicious constructs. Please check the reported"; \

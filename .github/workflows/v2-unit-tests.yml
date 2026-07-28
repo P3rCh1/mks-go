@@ -24,7 +24,7 @@ jobs:
           mockery-version: '2.53.6'
 
       - name: Check mockery relevance
-        run: cd pkg/v2 && make check-mockery
+        run: cd pkg/v2 && sh -c "'./scripts/check_mockery.sh'"
 
       - name: Run test
-        run: cd pkg/v2 && sh -c "'./scripts/check_mockery.sh'"
+        run: cd pkg/v2 && make unittest

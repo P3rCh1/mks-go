@@ -2,7 +2,7 @@
 
 echo "==> Checking mocks are up to date..."
 
-mockery
+go run github.com/vektra/mockery/v2@v2.53.6
 
 if [ -n "$(git diff --stat -- 'mksclient/mocks/')" ]; then
     echo "Mocks are outdated!"
