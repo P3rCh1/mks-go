@@ -4,7 +4,7 @@ versions through the MKS V2 API.
 
 Example of getting all supported Kubernetes versions
 
-	kubeVersions, _, err := kubeversion.List(ctx, mksClient)
+	kubeVersions, err := kubeversion.List(ctx, mksClient)
 	if err != nil {
 	  log.Fatal(err)
 	}
