@@ -10,7 +10,7 @@ const (
 	NameHTTPError                 = "http error"
 	NameEmptyFeatureGates         = "empty feature gates"
 	NameEmptyAdmissionControllers = "empty admission controllers"
-	NameEmptyKubeVersions          = "empty kube_versions"
+	NameEmptyKubeVersions         = "empty kube_versions"
 )
 
 // Error message constants.
