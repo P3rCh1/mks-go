@@ -25,7 +25,7 @@ func TestListFeatureGates(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.ListFeatureGatesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -42,7 +42,7 @@ func TestListFeatureGates(t *testing.T) {
 			},
 		},
 		{
-			name: "empty feature gates",
+			name: testutils.NameEmptyFeatureGates,
 			clientResponse: &mksclient.ListFeatureGatesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -52,7 +52,7 @@ func TestListFeatureGates(t *testing.T) {
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.ListFeatureGatesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -62,17 +62,17 @@ func TestListFeatureGates(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.ListFeatureGatesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -85,7 +85,7 @@ func TestListFeatureGates(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -136,7 +136,7 @@ func TestListAdmissionControllers(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.ListAdmissionControllersV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -153,7 +153,7 @@ func TestListAdmissionControllers(t *testing.T) {
 			},
 		},
 		{
-			name: "empty admission controllers",
+			name: testutils.NameEmptyAdmissionControllers,
 			clientResponse: &mksclient.ListAdmissionControllersV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -163,7 +163,7 @@ func TestListAdmissionControllers(t *testing.T) {
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.ListAdmissionControllersV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -173,17 +173,17 @@ func TestListAdmissionControllers(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.ListAdmissionControllersV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -196,7 +196,7 @@ func TestListAdmissionControllers(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
