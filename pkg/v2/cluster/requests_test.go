@@ -10,14 +10,11 @@ import (
 	v2 "github.com/selectel/mks-go/pkg/v2"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
+	"github.com/selectel/mks-go/pkg/v2/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
-
-func ptr[T any](value T) *T {
-	return &value
-}
 
 func TestGet(t *testing.T) {
 	const clusterID = "test-cluster-id"
@@ -381,7 +378,7 @@ func TestDelete(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: ptr(any(struct{}{})),
+				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{
@@ -608,7 +605,7 @@ func TestRotateCerts(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: ptr(any(struct{}{})),
+				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{

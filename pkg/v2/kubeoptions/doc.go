@@ -9,7 +9,7 @@ Example of getting available feature gates by Kubernetes version:
 	  log.Fatal(err)
 	}
 	for _, fgList := range availableFG {
-	  fmt.Printf("%s: %v\n", fgList.KubeVersion, fgList.Names)
+	  fmt.Printf("%s: %v\n", fgList.KubeVersionMinor, fgList.Names)
 	}
 */
 package kubeoptions

@@ -9,14 +9,11 @@ import (
 	v2 "github.com/selectel/mks-go/pkg/v2"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
+	"github.com/selectel/mks-go/pkg/v2/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
-
-func ptr[T any](value T) *T {
-	return &value
-}
 
 func TestListFeatureGates(t *testing.T) {
 	httpError := errors.New("error")
@@ -37,8 +34,8 @@ func TestListFeatureGates(t *testing.T) {
 				JSON200: &mksclient.FeatureGatesList{
 					FeatureGates: &[]mksclient.AvailableFeatureGates{
 						{
-							KubeVersionMinor: ptr("1.28"),
-							Names:            ptr(mksclient.OptionNamesFG{"FeatureGate1", "FeatureGate2"}),
+							KubeVersionMinor: testutils.Ptr("1.28"),
+							Names:            testutils.Ptr(mksclient.OptionNamesFG{"FeatureGate1", "FeatureGate2"}),
 						},
 					},
 				},
@@ -123,7 +120,7 @@ func TestListFeatureGates(t *testing.T) {
 			if test.clientResponse.JSON200.FeatureGates != nil {
 				assert.Equal(t, *test.clientResponse.JSON200.FeatureGates, featureGates)
 			} else {
-				assert.Nil(t, featureGates)
+				assert.Empty(t, featureGates)
 			}
 		})
 	}
@@ -148,8 +145,8 @@ func TestListAdmissionControllers(t *testing.T) {
 				JSON200: &mksclient.AdmissionControllersList{
 					AdmissionControllers: &[]mksclient.AvailableAdmissionControllers{
 						{
-							KubeVersionMinor: ptr("1.28"),
-							Names:            ptr(mksclient.OptionNamesAC{"AC1", "AC2"}),
+							KubeVersionMinor: testutils.Ptr("1.28"),
+							Names:            testutils.Ptr(mksclient.OptionNamesAC{"AC1", "AC2"}),
 						},
 					},
 				},
@@ -234,7 +231,7 @@ func TestListAdmissionControllers(t *testing.T) {
 			if test.clientResponse.JSON200.AdmissionControllers != nil {
 				assert.Equal(t, *test.clientResponse.JSON200.AdmissionControllers, admissionControllers)
 			} else {
-				assert.Nil(t, admissionControllers)
+				assert.Empty(t, admissionControllers)
 			}
 		})
 	}

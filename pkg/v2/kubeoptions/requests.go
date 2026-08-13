@@ -16,7 +16,7 @@ func ListFeatureGates(ctx context.Context, client *v2.ServiceClient) ([]mksclien
 
 	if responseResult.JSON200 != nil {
 		if responseResult.JSON200.FeatureGates == nil {
-			return nil, nil
+			return []mksclient.AvailableFeatureGates{}, nil
 		}
 
 		return *responseResult.JSON200.FeatureGates, nil
@@ -37,7 +37,7 @@ func ListAdmissionControllers(ctx context.Context, client *v2.ServiceClient) ([]
 
 	if responseResult.JSON200 != nil {
 		if responseResult.JSON200.AdmissionControllers == nil {
-			return nil, nil
+			return []mksclient.AvailableAdmissionControllers{}, nil
 		}
 
 		return *responseResult.JSON200.AdmissionControllers, nil
