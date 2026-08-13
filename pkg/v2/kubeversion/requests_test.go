@@ -36,7 +36,7 @@ func TestList(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -48,7 +48,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: "nil kube_versions",
+			name: testutils.NameEmptyKubeVersions,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -78,7 +78,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: "unexpected status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -91,7 +91,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},

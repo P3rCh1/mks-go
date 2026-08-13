@@ -3,11 +3,14 @@ package testutils
 
 // Test case name constants.
 const (
-	NameSuccess       = "success"
-	NameInternalError = "internal server error"
-	NameNotFound      = "not found"
-	NameUnknownStatus = "unknown status"
-	NameHTTPError     = "http error"
+	NameSuccess                   = "success"
+	NameInternalError             = "internal server error"
+	NameNotFound                  = "not found"
+	NameUnknownStatus             = "unknown status"
+	NameHTTPError                 = "http error"
+	NameEmptyFeatureGates         = "empty feature gates"
+	NameEmptyAdmissionControllers = "empty admission controllers"
+	NameEmptyKubeVersions         = "empty kube_versions"
 )
 
 // Error message constants.
