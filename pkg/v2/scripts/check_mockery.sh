@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 echo "==> Checking mocks are up to date..."
 
-go run github.com/vektra/mockery/v2@v2.53.6
+go run github.com/vektra/mockery/v2@"${VERSION}"
 
 if [ -n "$(git diff --stat -- 'mksclient/mocks/')" ]; then
     echo "Mocks are outdated!"
