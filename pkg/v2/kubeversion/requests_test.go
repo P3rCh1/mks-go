@@ -9,26 +9,23 @@ import (
 	v2 "github.com/selectel/mks-go/pkg/v2"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
+	"github.com/selectel/mks-go/pkg/v2/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
-
-func ptr[T any](value T) *T {
-	return &value
-}
 
 func TestList(t *testing.T) {
 	httpError := errors.New("error")
 
 	versions := []mksclient.KubeVersionInfo{
 		{
-			Version:   ptr("v1.27.0"),
-			IsDefault: ptr(false),
+			Version:   testutils.Ptr("v1.27.0"),
+			IsDefault: testutils.Ptr(false),
 		},
 		{
-			Version:   ptr("v1.28.0"),
-			IsDefault: ptr(true),
+			Version:   testutils.Ptr("v1.28.0"),
+			IsDefault: testutils.Ptr(true),
 		},
 	}
 
@@ -78,6 +75,19 @@ func TestList(t *testing.T) {
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
 				Message:    "internal server error",
+			},
+		},
+		{
+			name: "unexpected status",
+			clientResponse: &mksclient.ListKubeVersionsV2Response{
+				HTTPResponse: &http.Response{
+					StatusCode: http.StatusServiceUnavailable,
+					Status:     http.StatusText(http.StatusServiceUnavailable),
+				},
+			},
+			errExpected: &mksclient.MKSError{
+				StatusCode: http.StatusServiceUnavailable,
+				Message:    http.StatusText(http.StatusServiceUnavailable),
 			},
 		},
 		{
