@@ -16,7 +16,7 @@ func List(ctx context.Context, client *v2.ServiceClient) ([]mksclient.KubeVersio
 
 	if responseResult.JSON200 != nil {
 		if responseResult.JSON200.KubeVersions == nil {
-			return nil, nil
+			return []mksclient.KubeVersionInfo{}, nil
 		}
 
 		return *responseResult.JSON200.KubeVersions, nil

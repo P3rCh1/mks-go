@@ -1,0 +1,22 @@
+// Package testutils provides test helper utilities.
+package testutils
+
+// Test case name constants.
+const (
+	NameSuccess       = "success"
+	NameInternalError = "internal server error"
+	NameNotFound      = "not found"
+	NameUnknownStatus = "unknown status"
+	NameHTTPError     = "http error"
+)
+
+// Error message constants.
+const (
+	MsgInternalError   = "internal server error"
+	MsgClusterNotFound = "cluster not found"
+)
+
+// Ptr returns a pointer to the given value.
+func Ptr[T any](value T) *T {
+	return &value
+}
