@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"net/http"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
@@ -31,7 +32,7 @@ func Reinstall(ctx context.Context, client *v2.ServiceClient, clusterID, nodegro
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 
@@ -49,7 +50,7 @@ func Delete(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupI
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 
