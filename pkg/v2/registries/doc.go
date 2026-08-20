@@ -4,11 +4,11 @@ through the MKS V2 API.
 
 Example of getting cluster registries
 
-	clusterRegistries, err := registries.Get(ctx, mksClient, clusterID)
+	clusterRegistriesIntegration, err := registries.Get(ctx, mksClient, clusterID)
 	if err != nil {
 	  log.Fatal(err)
 	}
-	for _, registry := range clusterRegistries {
+	for _, registry := range clusterRegistriesIntegration.Registries {
 	  fmt.Printf("%+v\n", registry)
 	}
 */

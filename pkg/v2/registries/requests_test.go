@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
+	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -14,11 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](value T) *T {
-	return &value
-}
-
-func TestList(t *testing.T) {
+func TestGet(t *testing.T) {
 	const clusterID = "test-cluster-id"
 
 	httpError := errors.New("error")
@@ -30,7 +27,7 @@ func TestList(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.GetRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -48,7 +45,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.GetRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -58,17 +55,17 @@ func TestList(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "registries not found",
+						Message: testutils.MsgRegistriesNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "registries not found",
+				Message:    testutils.MsgRegistriesNotFound,
 			},
 		},
 		{
-			name: "bad request",
+			name: testutils.NameBadRequest,
 			clientResponse: &mksclient.GetRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -78,17 +75,17 @@ func TestList(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "bad request",
+						Message: testutils.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    "bad request",
+				Message:    testutils.MsgBadRequest,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.GetRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -98,17 +95,17 @@ func TestList(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.GetRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -121,7 +118,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -172,7 +169,7 @@ func TestCreate(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusCreated,
@@ -190,7 +187,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -200,17 +197,17 @@ func TestCreate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "cluster not found",
+						Message: testutils.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "cluster not found",
+				Message:    testutils.MsgClusterNotFound,
 			},
 		},
 		{
-			name: "bad request",
+			name: testutils.NameBadRequest,
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -220,17 +217,17 @@ func TestCreate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "bad request",
+						Message: testutils.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    "bad request",
+				Message:    testutils.MsgBadRequest,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -240,17 +237,17 @@ func TestCreate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -263,7 +260,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -321,7 +318,7 @@ func TestUpdate(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -339,7 +336,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -349,17 +346,17 @@ func TestUpdate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "cluster not found",
+						Message: testutils.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "cluster not found",
+				Message:    testutils.MsgClusterNotFound,
 			},
 		},
 		{
-			name: "bad request",
+			name: testutils.NameBadRequest,
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -369,17 +366,17 @@ func TestUpdate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "bad request",
+						Message: testutils.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    "bad request",
+				Message:    testutils.MsgBadRequest,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -389,17 +386,17 @@ func TestUpdate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -412,7 +409,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -473,17 +470,16 @@ func TestDelete(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.DeleteRegistryV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: ptr(any(struct{}{})),
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.DeleteRegistryV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -493,17 +489,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "registry not found",
+						Message: testutils.MsgRegistryNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "registry not found",
+				Message:    testutils.MsgRegistryNotFound,
 			},
 		},
 		{
-			name: "bad request",
+			name: testutils.NameBadRequest,
 			clientResponse: &mksclient.DeleteRegistryV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -513,17 +509,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "bad request",
+						Message: testutils.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    "bad request",
+				Message:    testutils.MsgBadRequest,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.DeleteRegistryV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -533,17 +529,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.DeleteRegistryV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -556,7 +552,7 @@ func TestDelete(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -603,17 +599,16 @@ func TestDeleteAll(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.DeleteRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: ptr(any(struct{}{})),
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.DeleteRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -623,17 +618,17 @@ func TestDeleteAll(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "cluster not found",
+						Message: testutils.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "cluster not found",
+				Message:    testutils.MsgClusterNotFound,
 			},
 		},
 		{
-			name: "bad request",
+			name: testutils.NameBadRequest,
 			clientResponse: &mksclient.DeleteRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -643,17 +638,17 @@ func TestDeleteAll(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "bad request",
+						Message: testutils.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    "bad request",
+				Message:    testutils.MsgBadRequest,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.DeleteRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -663,17 +658,17 @@ func TestDeleteAll(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.DeleteRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -686,7 +681,7 @@ func TestDeleteAll(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
