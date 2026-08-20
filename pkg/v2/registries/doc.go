@@ -4,7 +4,7 @@ through the MKS V2 API.
 
 Example of getting cluster registries
 
-	clusterRegistriesIntegration, err := registries.Get(ctx, mksClient, clusterID)
+	clusterRegistriesIntegration, err := registries.Get(ctx, client, clusterID)
 	if err != nil {
 	  log.Fatal(err)
 	}

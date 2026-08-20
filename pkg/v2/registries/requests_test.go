@@ -15,6 +15,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const testRegistryID = "test-registry-id"
+
 func TestGet(t *testing.T) {
 	const clusterID = "test-cluster-id"
 
@@ -36,7 +38,7 @@ func TestGet(t *testing.T) {
 				JSON200: &mksclient.RegistriesIntegration{
 					Registries: []mksclient.RegistryWithMeta{
 						{
-							Id:   "test-registry-id",
+							Id:   testRegistryID,
 							Name: "test-registry",
 						},
 					},
@@ -165,11 +167,15 @@ func TestCreate(t *testing.T) {
 	tests := []struct {
 		name           string
 		clientResponse *mksclient.CreateRegistriesV2Response
+		requestBody    mksclient.RegistriesIntergrationCreateBody
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: testutils.NameSuccess,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusCreated,
@@ -178,7 +184,7 @@ func TestCreate(t *testing.T) {
 				JSON201: &mksclient.RegistriesIntegration{
 					Registries: []mksclient.RegistryWithMeta{
 						{
-							Id:   "test-registry-id",
+							Id:   testRegistryID,
 							Name: "test-registry",
 						},
 					},
@@ -188,6 +194,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: testutils.NameNotFound,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -208,6 +217,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: testutils.NameBadRequest,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -228,6 +240,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: testutils.NameInternalError,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -248,6 +263,9 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			name: testutils.NameUnknownStatus,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.CreateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -260,7 +278,10 @@ func TestCreate(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name: testutils.NameHTTPError,
+			requestBody: mksclient.RegistriesIntergrationCreateBody{
+				Registries: []mksclient.RegistriesIntergrationCreateStruct{{Id: testRegistryID}},
+			},
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -270,14 +291,14 @@ func TestCreate(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().CreateRegistriesV2WithResponse(
-				mock.Anything, clusterID, mock.Anything,
+				mock.Anything, clusterID, test.requestBody,
 			).Return(test.clientResponse, test.clientError)
 
 			registries, err := Create(
 				context.Background(),
 				&v2.ServiceClient{MKSClient: mksClient},
 				clusterID,
-				[]mksclient.RegistriesIntergrationCreateStruct{{Id: "test-registry-id"}},
+				test.requestBody.Registries,
 			)
 
 			if test.errExpected != nil {
@@ -314,11 +335,15 @@ func TestUpdate(t *testing.T) {
 	tests := []struct {
 		name           string
 		clientResponse *mksclient.UpdateRegistriesV2Response
+		requestBody    mksclient.RegistriesIntergrationUpdateBody
 		clientError    error
 		errExpected    error
 	}{
 		{
 			name: testutils.NameSuccess,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -327,7 +352,7 @@ func TestUpdate(t *testing.T) {
 				JSON200: &mksclient.RegistriesIntegration{
 					Registries: []mksclient.RegistryWithMeta{
 						{
-							Id:   "test-registry-id",
+							Id:   testRegistryID,
 							Name: "test-registry",
 						},
 					},
@@ -337,6 +362,9 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: testutils.NameNotFound,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -357,6 +385,9 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: testutils.NameBadRequest,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -377,6 +408,9 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: testutils.NameInternalError,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -397,6 +431,9 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			name: testutils.NameUnknownStatus,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientResponse: &mksclient.UpdateRegistriesV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -409,7 +446,10 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name: testutils.NameHTTPError,
+			requestBody: mksclient.RegistriesIntergrationUpdateBody{
+				Registries: []mksclient.RegistriesIntergrationUpdateStruct{{Id: testRegistryID}},
+			},
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -419,14 +459,14 @@ func TestUpdate(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			mksClient := mksmock.NewMockClientWithResponsesInterface(t)
 			mksClient.EXPECT().UpdateRegistriesV2WithResponse(
-				mock.Anything, clusterID, mock.Anything,
+				mock.Anything, clusterID, test.requestBody,
 			).Return(test.clientResponse, test.clientError)
 
 			registries, err := Update(
 				context.Background(),
 				&v2.ServiceClient{MKSClient: mksClient},
 				clusterID,
-				[]mksclient.RegistriesIntergrationUpdateStruct{{Id: "test-registry-id"}},
+				test.requestBody.Registries,
 			)
 
 			if test.errExpected != nil {
@@ -458,7 +498,7 @@ func TestUpdate(t *testing.T) {
 func TestDelete(t *testing.T) {
 	const (
 		clusterID  = "test-cluster-id"
-		registryID = "test-registry-id"
+		registryID = testRegistryID
 	)
 
 	httpError := errors.New("error")
