@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
+	"github.com/selectel/mks-go/pkg/v2/internal/common"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -20,12 +20,12 @@ func TestList(t *testing.T) {
 
 	versions := []mksclient.KubeVersionInfo{
 		{
-			Version:   testutils.Ptr("v1.27.0"),
-			IsDefault: testutils.Ptr(false),
+			Version:   common.Ptr("v1.27.0"),
+			IsDefault: common.Ptr(false),
 		},
 		{
-			Version:   testutils.Ptr("v1.28.0"),
-			IsDefault: testutils.Ptr(true),
+			Version:   common.Ptr("v1.28.0"),
+			IsDefault: common.Ptr(true),
 		},
 	}
 
@@ -36,7 +36,7 @@ func TestList(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -48,7 +48,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameEmptyKubeVersions,
+			name: common.NameEmptyKubeVersions,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -58,7 +58,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -68,17 +68,17 @@ func TestList(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.ListKubeVersionsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -91,7 +91,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},

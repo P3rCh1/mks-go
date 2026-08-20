@@ -4,7 +4,7 @@ import (
 	"context"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
+	"github.com/selectel/mks-go/pkg/v2/internal/common"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 )
 
@@ -12,7 +12,7 @@ import (
 func Get(ctx context.Context, client *v2.ServiceClient, clusterID, taskID string) (*mksclient.Task, error) {
 	responseResult, err := client.MKSClient.GetTaskV2WithResponse(
 		ctx, clusterID,
-		taskID, &mksclient.GetTaskV2Params{WithErrorDetails: testutils.Ptr(true)},
+		taskID, &mksclient.GetTaskV2Params{WithErrorDetails: common.Ptr(true)},
 	)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func List(ctx context.Context, client *v2.ServiceClient, clusterID string, limit
 	responseResult, err := client.MKSClient.ListTasksV2WithResponse(
 		ctx, clusterID,
 		&mksclient.ListTasksV2Params{
-			Limit: &limit, Offset: &offset, WithErrorDetails: testutils.Ptr(true),
+			Limit: &limit, Offset: &offset, WithErrorDetails: common.Ptr(true),
 		},
 	)
 	if err != nil {
