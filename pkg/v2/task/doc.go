@@ -3,7 +3,7 @@ Package task provides the ability to retrieve cluster tasks through the MKS V2 A
 
 Example of getting a single cluster task referenced by its id
 
-	clusterTask, _, err := task.Get(ctx, mksClient, clusterID, taskID)
+	clusterTask, err := task.Get(ctx, mksClient, clusterID, taskID)
 	if err != nil {
 	  log.Fatal(err)
 	}

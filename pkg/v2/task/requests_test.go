@@ -8,6 +8,7 @@ import (
 	"time"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
+	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +31,7 @@ func TestGet(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.GetTaskV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -40,14 +41,14 @@ func TestGet(t *testing.T) {
 					Task: mksclient.Task{
 						ClusterId:   clusterID,
 						Id:          taskID,
-						NodegroupId: ptr("test-nodegroup-id"),
+						NodegroupId: testutils.Ptr("test-nodegroup-id"),
 						StartedAt:   time.Now(),
 						Status:      mksclient.INPROGRESS,
 						Type:        "test-type",
-						UpdatedAt:   ptr(time.Now()),
+						UpdatedAt:   testutils.Ptr(time.Now()),
 						ErrorDetails: &mksclient.TaskErrorDetails{
 							Code:    1,
-							Details: ptr("test-error"),
+							Details: testutils.Ptr("test-error"),
 							Name:    "TEST_ERROR",
 						},
 					},
@@ -55,7 +56,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.GetTaskV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -77,7 +78,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.GetTaskV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -87,17 +88,17 @@ func TestGet(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.GetTaskV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -110,7 +111,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -165,7 +166,7 @@ func TestList(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: "success",
+			name: testutils.NameSuccess,
 			clientResponse: &mksclient.ListTasksV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -177,28 +178,28 @@ func TestList(t *testing.T) {
 						{
 							ClusterId:   clusterID,
 							Id:          "test-task-id-1",
-							NodegroupId: ptr("test-nodegroup-id"),
+							NodegroupId: testutils.Ptr("test-nodegroup-id"),
 							StartedAt:   time.Now(),
 							Status:      mksclient.INPROGRESS,
 							Type:        "test-type",
-							UpdatedAt:   ptr(time.Now()),
+							UpdatedAt:   testutils.Ptr(time.Now()),
 							ErrorDetails: &mksclient.TaskErrorDetails{
 								Code:    1,
-								Details: ptr("test-error"),
+								Details: testutils.Ptr("test-error"),
 								Name:    "TEST_ERROR",
 							},
 						},
 						{
 							ClusterId:   clusterID,
 							Id:          "test-task-id-2",
-							NodegroupId: ptr("test-nodegroup-id"),
+							NodegroupId: testutils.Ptr("test-nodegroup-id"),
 							StartedAt:   time.Now(),
 							Status:      mksclient.DONE,
 							Type:        "test-type",
-							UpdatedAt:   ptr(time.Now()),
+							UpdatedAt:   testutils.Ptr(time.Now()),
 							ErrorDetails: &mksclient.TaskErrorDetails{
 								Code:    2,
-								Details: ptr("test-error"),
+								Details: testutils.Ptr("test-error"),
 								Name:    "TEST_ERROR",
 							},
 						},
@@ -207,7 +208,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name: "not found",
+			name: testutils.NameNotFound,
 			clientResponse: &mksclient.ListTasksV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -219,17 +220,17 @@ func TestList(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: "cluster not found",
+						Message: testutils.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    "cluster not found",
+				Message:    testutils.MsgClusterNotFound,
 			},
 		},
 		{
-			name: "internal server error",
+			name: testutils.NameInternalError,
 			clientResponse: &mksclient.ListTasksV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -239,17 +240,17 @@ func TestList(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: "internal server error",
+						Message: testutils.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "internal server error",
+				Message:    testutils.MsgInternalError,
 			},
 		},
 		{
-			name: "unknown status",
+			name: testutils.NameUnknownStatus,
 			clientResponse: &mksclient.ListTasksV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -262,7 +263,7 @@ func TestList(t *testing.T) {
 			},
 		},
 		{
-			name:        "http error",
+			name:        testutils.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
