@@ -8,6 +8,7 @@ import (
 	"time"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
+	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/selectel/mks-go/pkg/v2/testutils"
