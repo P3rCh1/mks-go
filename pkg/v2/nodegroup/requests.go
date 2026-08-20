@@ -32,6 +32,10 @@ func List(ctx context.Context, client *v2.ServiceClient, clusterID string) ([]mk
 	}
 
 	if responseResult.JSON200 != nil {
+		if responseResult.JSON200.Nodegroups == nil {
+			return []mksclient.NodegroupListItem{}, nil
+		}
+
 		return responseResult.JSON200.Nodegroups, nil
 	}
 
@@ -100,7 +104,7 @@ func Resize(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupI
 	)
 }
 
-// Update requests a update of a cluster nodegroup by its id.
+// Update requests an update of a cluster nodegroup by its id.
 func Update(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupID string, nodegroup mksclient.NodegroupUpdateStruct) error {
 	responseResult, err := client.MKSClient.UpdateNodegroupV2WithResponse(
 		ctx, clusterID, nodegroupID,
