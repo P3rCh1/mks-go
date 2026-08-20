@@ -2,6 +2,7 @@ package nodegroup
 
 import (
 	"context"
+	"net/http"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
@@ -55,7 +56,7 @@ func Create(ctx context.Context, client *v2.ServiceClient, clusterID string, nod
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 
@@ -72,7 +73,7 @@ func Delete(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupI
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 
@@ -94,7 +95,7 @@ func Resize(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupI
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 
@@ -114,7 +115,7 @@ func Update(ctx context.Context, client *v2.ServiceClient, clusterID, nodegroupI
 		return err
 	}
 
-	if responseResult.JSON204 != nil {
+	if responseResult.StatusCode() == http.StatusNoContent {
 		return nil
 	}
 

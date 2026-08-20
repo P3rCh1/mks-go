@@ -386,7 +386,6 @@ func TestCreate(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{
@@ -539,7 +538,6 @@ func TestDelete(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{
@@ -692,7 +690,6 @@ func TestResize(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{
@@ -845,7 +842,6 @@ func TestUpdate(t *testing.T) {
 					StatusCode: http.StatusNoContent,
 					Status:     http.StatusText(http.StatusNoContent),
 				},
-				JSON204: testutils.Ptr(any(struct{}{})),
 			},
 		},
 		{
