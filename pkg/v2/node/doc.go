@@ -6,7 +6,7 @@ Example of getting a single node of a cluster nodegroup by its id
 
 	singleNode, err := node.Get(ctx, client, clusterID, nodegroupID, nodeID)
 	if err != nil {
-		log.Fatal(err)
+	  log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", singleNode)
 */
