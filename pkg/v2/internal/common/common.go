@@ -1,5 +1,5 @@
-// Package testutils provides test helper utilities.
-package testutils
+// Package common provides helper utilities.
+package common
 
 // Test case name constants.
 const (
