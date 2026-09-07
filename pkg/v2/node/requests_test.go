@@ -8,7 +8,7 @@ import (
 	"time"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
+	"github.com/selectel/mks-go/pkg/v2/internal/common"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -32,7 +32,7 @@ func TestGet(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.GetNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -46,13 +46,13 @@ func TestGet(t *testing.T) {
 						Ip:               "10.0.0.1",
 						NodegroupId:      nodegroupID,
 						ProviderServerId: "provider-server-id",
-						UpdatedAt:        testutils.Ptr(time.Now()),
+						UpdatedAt:        common.Ptr(time.Now()),
 					},
 				},
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.GetNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -62,17 +62,17 @@ func TestGet(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgNodeNotFound,
+						Message: common.MsgNodeNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgNodeNotFound,
+				Message:    common.MsgNodeNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.GetNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -82,17 +82,17 @@ func TestGet(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.GetNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -105,7 +105,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -161,7 +161,7 @@ func TestReinstall(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
@@ -170,7 +170,7 @@ func TestReinstall(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -180,17 +180,17 @@ func TestReinstall(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgNodeNotFound,
+						Message: common.MsgNodeNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgNodeNotFound,
+				Message:    common.MsgNodeNotFound,
 			},
 		},
 		{
-			name: testutils.NameBadRequest,
+			name: common.NameBadRequest,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -200,17 +200,17 @@ func TestReinstall(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgBadRequest,
+						Message: common.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    testutils.MsgBadRequest,
+				Message:    common.MsgBadRequest,
 			},
 		},
 		{
-			name: testutils.NameConflict,
+			name: common.NameConflict,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusConflict,
@@ -220,17 +220,17 @@ func TestReinstall(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgConflict,
+						Message: common.MsgConflict,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusConflict,
-				Message:    testutils.MsgConflict,
+				Message:    common.MsgConflict,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -240,17 +240,17 @@ func TestReinstall(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.ReinstallNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -263,7 +263,7 @@ func TestReinstall(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -314,7 +314,7 @@ func TestDelete(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
@@ -323,7 +323,7 @@ func TestDelete(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -333,17 +333,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgNodeNotFound,
+						Message: common.MsgNodeNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgNodeNotFound,
+				Message:    common.MsgNodeNotFound,
 			},
 		},
 		{
-			name: testutils.NameBadRequest,
+			name: common.NameBadRequest,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusBadRequest,
@@ -353,17 +353,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgBadRequest,
+						Message: common.MsgBadRequest,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusBadRequest,
-				Message:    testutils.MsgBadRequest,
+				Message:    common.MsgBadRequest,
 			},
 		},
 		{
-			name: testutils.NameConflict,
+			name: common.NameConflict,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusConflict,
@@ -373,17 +373,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgConflict,
+						Message: common.MsgConflict,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusConflict,
-				Message:    testutils.MsgConflict,
+				Message:    common.MsgConflict,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -393,17 +393,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.DeleteNodeV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -416,7 +416,7 @@ func TestDelete(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	v2 "github.com/selectel/mks-go/pkg/v2"
-	"github.com/selectel/mks-go/pkg/v2/internal/testutils"
+	"github.com/selectel/mks-go/pkg/v2/internal/common"
 	"github.com/selectel/mks-go/pkg/v2/mksclient"
 	mksmock "github.com/selectel/mks-go/pkg/v2/mksclient/mocks"
 	"github.com/stretchr/testify/assert"
@@ -36,7 +36,7 @@ func TestGet(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -61,7 +61,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -71,17 +71,17 @@ func TestGet(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -93,17 +93,17 @@ func TestGet(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.GetClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -116,7 +116,7 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -166,7 +166,7 @@ func TestCreate(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusCreated,
@@ -191,7 +191,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -201,17 +201,17 @@ func TestCreate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.CreateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -224,7 +224,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -273,7 +273,7 @@ func TestUpdate(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -298,7 +298,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -308,17 +308,17 @@ func TestUpdate(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.UpdateClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -331,7 +331,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -380,7 +380,7 @@ func TestDelete(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
@@ -389,7 +389,7 @@ func TestDelete(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -401,17 +401,17 @@ func TestDelete(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -421,17 +421,17 @@ func TestDelete(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.DeleteClusterV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -444,7 +444,7 @@ func TestDelete(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -493,7 +493,7 @@ func TestGetKubeconfig(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -503,7 +503,7 @@ func TestGetKubeconfig(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -515,17 +515,17 @@ func TestGetKubeconfig(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -535,17 +535,17 @@ func TestGetKubeconfig(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.GetClusterKubeconfigV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -558,7 +558,7 @@ func TestGetKubeconfig(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -606,7 +606,7 @@ func TestRotateCerts(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNoContent,
@@ -615,7 +615,7 @@ func TestRotateCerts(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -627,17 +627,17 @@ func TestRotateCerts(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -647,17 +647,17 @@ func TestRotateCerts(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.RotateClusterCertsV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -670,7 +670,7 @@ func TestRotateCerts(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -717,7 +717,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -742,7 +742,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -754,17 +754,17 @@ func TestUpgradePatchVersion(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -774,17 +774,17 @@ func TestUpgradePatchVersion(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.UpgradePatchVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -797,7 +797,7 @@ func TestUpgradePatchVersion(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
@@ -846,7 +846,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 		errExpected    error
 	}{
 		{
-			name: testutils.NameSuccess,
+			name: common.NameSuccess,
 			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusOK,
@@ -871,7 +871,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 			},
 		},
 		{
-			name: testutils.NameNotFound,
+			name: common.NameNotFound,
 			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusNotFound,
@@ -883,17 +883,17 @@ func TestUpgradeMinorVersion(t *testing.T) {
 						Message string `json:"message"`
 					}{
 						Id:      clusterID,
-						Message: testutils.MsgClusterNotFound,
+						Message: common.MsgClusterNotFound,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusNotFound,
-				Message:    testutils.MsgClusterNotFound,
+				Message:    common.MsgClusterNotFound,
 			},
 		},
 		{
-			name: testutils.NameInternalError,
+			name: common.NameInternalError,
 			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -903,17 +903,17 @@ func TestUpgradeMinorVersion(t *testing.T) {
 					Error: struct {
 						Message string `json:"message"`
 					}{
-						Message: testutils.MsgInternalError,
+						Message: common.MsgInternalError,
 					},
 				},
 			},
 			errExpected: &mksclient.MKSError{
 				StatusCode: http.StatusInternalServerError,
-				Message:    testutils.MsgInternalError,
+				Message:    common.MsgInternalError,
 			},
 		},
 		{
-			name: testutils.NameUnknownStatus,
+			name: common.NameUnknownStatus,
 			clientResponse: &mksclient.UpgradeMinorVersionV2Response{
 				HTTPResponse: &http.Response{
 					StatusCode: http.StatusServiceUnavailable,
@@ -926,7 +926,7 @@ func TestUpgradeMinorVersion(t *testing.T) {
 			},
 		},
 		{
-			name:        testutils.NameHTTPError,
+			name:        common.NameHTTPError,
 			clientError: httpError,
 			errExpected: httpError,
 		},
