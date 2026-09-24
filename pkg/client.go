@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/selectel/mks-go/pkg/mksclient"
+	"github.com/selectel/mks-go/v2/pkg/mksclient"
 )
 
 const (
@@ -40,7 +40,7 @@ const (
 	defaultExpectContinueTimeout = 1
 
 	// selfPath represents the package self path.
-	selfPath = "github.com/selectel/mks-go/pkg"
+	selfPath = "github.com/selectel/mks-go/v2/pkg"
 
 	// defaultVersion represents the default version.
 	defaultVersion = "0.0.0"

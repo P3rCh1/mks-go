@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	mks "github.com/selectel/mks-go/pkg"
-	"github.com/selectel/mks-go/pkg/mksclient"
+	mks "github.com/selectel/mks-go/v2/pkg"
+	"github.com/selectel/mks-go/v2/pkg/mksclient"
 )
 
 // Get returns a cluster nodegroup by its id.

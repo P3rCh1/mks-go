@@ -3,7 +3,7 @@
 package mksclient
 
 import (
-	mksclient "github.com/selectel/mks-go/pkg/mksclient"
+	mksclient "github.com/selectel/mks-go/v2/pkg/mksclient"
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -3,10 +3,10 @@ package task
 import (
 	"context"
 
-	"github.com/selectel/mks-go/internal/common"
+	"github.com/selectel/mks-go/v2/internal/common"
 
-	mks "github.com/selectel/mks-go/pkg"
-	"github.com/selectel/mks-go/pkg/mksclient"
+	mks "github.com/selectel/mks-go/v2/pkg"
+	"github.com/selectel/mks-go/v2/pkg/mksclient"
 )
 
 // Get returns a cluster task by its id.

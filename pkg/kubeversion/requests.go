@@ -3,8 +3,8 @@ package kubeversion
 import (
 	"context"
 
-	mks "github.com/selectel/mks-go/pkg"
-	"github.com/selectel/mks-go/pkg/mksclient"
+	mks "github.com/selectel/mks-go/v2/pkg"
+	"github.com/selectel/mks-go/v2/pkg/mksclient"
 )
 
 // List returns all supported Kubernetes versions.

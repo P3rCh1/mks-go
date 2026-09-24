@@ -3,8 +3,8 @@ package kubeoptions
 import (
 	"context"
 
-	mks "github.com/selectel/mks-go/pkg"
-	"github.com/selectel/mks-go/pkg/mksclient"
+	mks "github.com/selectel/mks-go/v2/pkg"
+	"github.com/selectel/mks-go/v2/pkg/mksclient"
 )
 
 // ListFeatureGates gets a list of available feature gates by Kubernetes versions.
