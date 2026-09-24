@@ -8,6 +8,6 @@ disable-version-string: True
 issue-845-fix: True
 resolve-type-alias: False
 packages:
-  github.com/selectel/mks-go/pkg:
+  github.com/selectel/mks-go:
     config:
       recursive: True
