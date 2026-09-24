@@ -8,7 +8,7 @@ go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@"${VERSION}" --c
 go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@"${VERSION}" --config=oapi-codegen-client.yaml managed-kubernetes.swagger.yaml
 cd ..
 
-if [ -n "$(git diff --stat -- 'pkg/')" ]; then
+if [ -n "$(git diff --stat)" ]; then
     echo "oapi generated code is outdated!"
     exit 1
 fi
